@@ -8,9 +8,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">
-            <img src="assets/logo.png" alt="Logo Domki Letniskowe" class="logo">
-        </div>
+        <a href="index.php"><img src="assets/logo.png" alt="Logo Domki Letniskowe" class="logo"></a>
         <nav>
             <ul>
                 <li><a href="oferta.php">Nasza Oferta</a></li>

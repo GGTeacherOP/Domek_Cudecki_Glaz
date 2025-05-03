@@ -1,21 +1,261 @@
+/* Zmienne globalne - definicje kolorów i podstawowych wartości */
+/* tutaj sa wszystkie kolory i żeby się do nich odnieść to trzeba var(--primary-color) na przyklad */
 :root {
     --primary-color: #2c5282;
     --secondary-color: #4299e1;
+    --accent-color: #48bb78;
     --text-color: #2d3748;
-    --light-bg: #f7fafc;
+    --light-bg: #e6f5ff;
 }
 
+/* Podstawowe style dla całej strony */
 body {
     margin: 0;
     font-family: 'Arial', sans-serif;
-    color: var(--text-color);
+    color: var(--text-color); 
+    line-height: 1.6;
 }
 
+/* Style dla nagłówka strony - fixed header */
+header {
+    background: white;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    padding: 0.7rem 3%; /* rem jest fajne bo się dostosowuje do wielkości czcionki */
+    position: fixed;
+    width: 94%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 65px;
+}
+
+/* Style dla logo w nagłówku */
+.logo {
+    width: 130px;
+    height: auto;
+}
+
+/* Główna nawigacja */
+nav {
+    flex: 1;
+}
+
+/* Lista elementów nawigacji */
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding: 0;
+    margin: 0;
+}
+
+/* Linki w nawigacji */
+nav a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.4rem 1rem;
+    border-radius: 3px;
+    transition: all 0.3s ease; /* to tak żeby płynnie było przy najechaniu */
+}
+
+/* Efekt hover na linkach nawigacji */
+nav a:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* Sekcja hero z tłem i nakładką */
+.hero {
+    height: 80vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../assets/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-top: 65px;
+}
+
+/* Kontener treści w sekcji hero */
+.hero-content {
+    padding: 2rem;
+}
+
+/* Nagłówek w sekcji hero */
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Paragraf w sekcji hero */
+.hero p {
+    font-size: 1.5rem;
+}
+
+/* Główny kontener treści */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nagłówki sekcji oferty i opinii */
+.oferta-skrot h2, 
+.opinie h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 3rem 0;
+    color: var(--primary-color);
+}
+
+/* Kontener dla kart domków */
+.domki-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+/* Style pojedynczej karty domku */
+.domek-karta {
+    background: var(--light-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Efekt hover na karcie domku */
+.domek-karta:hover {
+    transform: translateY(-5px);
+}
+
+/* Obrazek w karcie domku */
+.domek-karta img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Tekst w karcie domku */
+.domek-karta h3,
+.domek-karta p {
+    padding: 1rem;
+    margin: 0;
+}
+
+/* Przycisk "Więcej" */
+.btn-wiecej {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    margin: 1rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+/* Efekt hover na przycisku "Więcej" */
+.btn-wiecej:hover {
+    background: #38a169;
+}
+
+/* Kontener opinii */
+.opinie-container {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 2rem 0;
+}
+
+/* Pojedyncza opinia */
+.opinia {
+    background: var(--light-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    min-width: 300px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Tekst opinii */
+.opinia p {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Autor opinii */
+.opinia cite {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Sekcja Call-to-Action */
+.cta {
+    text-align: center;
+    padding: 4rem 0;
+    background: var(--light-bg);
+    margin: 3rem 0;
+    border-radius: 10px;
+}
+
+/* Przycisk rezerwacji */
+.btn-rezerwuj {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+/* Efekt hover na przycisku rezerwacji */
+.btn-rezerwuj:hover {
+    background: #38a169;
+    transform: scale(1.05);
+}
+
+/* Stopka */
 footer {
     background: var(--primary-color);
     color: white;
-    padding: 2rem;
+    padding: 3rem 5%;
 }
-.logo{
-    width: 300px;
+
+/* Kontener treści stopki */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+/* Linki social media w stopce */
+.social-link {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 0.5rem 0;
+    transition: color 0.3s ease;
+}
+
+/* Efekt hover na linkach social media */
+.social-link:hover {
+    color: var(--secondary-color);
+}
+
+/* Dodatkowe style dla logo */
+.logo {
+    padding-top: 15px;
+    border-radius: 20px;
 }
