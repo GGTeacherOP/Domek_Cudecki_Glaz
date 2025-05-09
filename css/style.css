@@ -259,3 +259,19 @@ footer {
     padding-top: 15px;
     border-radius: 20px;
 }
+
+.login-btn {
+    margin-left: auto;
+}
+.login-btn a {
+    background: var(--secondary-color);
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 0.4rem 1.2rem;
+    transition: background 0.3s;
+}
+.login-btn a:hover {
+    background: var(--accent-color);
+    color: #fff;
+}

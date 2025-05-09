@@ -54,6 +54,7 @@
                 <li><a href="kontakt.php">Kontakt</a></li>
                 <li><a href="opinie.php">Opinie</a></li>
                 <li><a href="admin.php">Panel admin</a></li>
+                <li class="login-btn"><a href="login.php">Login</a></li>
             </ul>
         </nav>
     </header>
