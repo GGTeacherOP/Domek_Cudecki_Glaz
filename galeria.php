@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -14,7 +17,10 @@
                 <li><a href="galeria.php">Galeria</a></li>
                 <li><a href="kontakt.php">Kontakt</a></li>
                 <li><a href="opinie.php">Opinie</a></li>
+                <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
                 <li><a href="admin.php">Panel admin</a></li>
+                <?php endif; ?>
+                <li class="login-btn"><a href="login.php">Login</a></li>
             </ul>
         </nav>
 </header>
