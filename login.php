@@ -5,7 +5,7 @@ session_start();
 $login_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Połączenie z bazą danych 
+        // Połączenie z bazą danych (zmień dane jak stworzysz bazę)
         $host = 'localhost';
         $db = 'domek';
         $user = 'root';
@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($password === $row['password']) {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
+                // Dodanie roli użytkownika do sesji
+                $_SESSION['user_role'] = $row['rola'] ?? 'user'; // Domyślna rola "user" jeśli nie istnieje w bazie
                 header('Location: index.php');
                 exit;
             } else {
