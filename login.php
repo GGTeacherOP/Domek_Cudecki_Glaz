@@ -4,34 +4,46 @@ session_start();
 // Obsługa formularza logowania
 $login_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Połączenie z bazą danych 
-    $host = 'localhost';
-    $db = 'domek';
-    $user = 'root';
-    $pass = '';
-    $mysqli = mysqli_connect($host, $user, $pass, $db);
+    try {
+        // Połączenie z bazą danych 
+        $host = 'localhost';
+        $db = 'domek';
+        $user = 'root';
+        $pass = '';
+        $mysqli = mysqli_connect($host, $user, $pass, $db);
 
-    if (mysqli_connect_errno()) {
-        $login_error = 'Błąd połączenia z bazą danych.';
-    } else {
-        $email = mysqli_real_escape_string($mysqli, $_POST['email']);
+        if (mysqli_connect_errno()) {
+            throw new Exception('Błąd połączenia z bazą danych.');
+        }
+
+        $email = $_POST['email'];
         $password = $_POST['password'];
 
         // Sprawdzenie użytkownika (hasło jako zwykły tekst, nieszyfrowane)
         $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email='$email' LIMIT 1");
-        if ($result && $row = mysqli_fetch_assoc($result)) {
+        
+        if (!$result) {
+            throw new Exception('Błąd zapytania do bazy danych.');
+        }
+        
+        if ($row = mysqli_fetch_assoc($result)) {
             if ($password === $row['password']) {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
                 header('Location: index.php');
                 exit;
             } else {
-                $login_error = 'Nieprawidłowy email lub hasło.';
+                throw new Exception('Nieprawidłowy email lub hasło.');
             }
         } else {
-            $login_error = 'Nieprawidłowy email lub hasło.';
+            throw new Exception('Nieprawidłowy email lub hasło.');
         }
-        mysqli_close($mysqli);
+    } catch (Exception $e) {
+        $login_error = $e->getMessage();
+    } finally {
+        if (isset($mysqli) && $mysqli) {
+            mysqli_close($mysqli);
+        }
     }
 }
 ?>
