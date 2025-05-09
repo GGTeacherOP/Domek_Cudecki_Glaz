@@ -187,7 +187,7 @@
                     
                     <div class="form-group">
                         <label for="uwagi">Dodatkowe uwagi</label>
-                        <textarea id="uwagi" name="uwagi" rows="3" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;"></textarea>
+                        <textarea id="uwagi" name="uwagi" rows="3" style="width: 96.49%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; resize: vertical;"></textarea>
                     </div>
                     
                     <button type="submit" class="btn-rezerwuj-teraz">Rezerwuj teraz</button>
