@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
                 // Dodanie roli użytkownika do sesji
-                $_SESSION['user_role'] = $row['rola'] ?? 'user'; // Domyślna rola "user" jeśli nie istnieje w bazie
+                $_SESSION['user_role'] = $row['rola'];
                 header('Location: index.php');
                 exit;
             } else {
