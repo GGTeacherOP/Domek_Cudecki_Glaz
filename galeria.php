@@ -6,7 +6,54 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title>Galeria</title>
-    <link rel="stylesheet" href="css/style_galeria.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+main{
+    padding-top: 100px;
+}
+.slider-container {
+    position: relative;
+    max-width: 900px;
+    margin: 40px auto;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.slider {
+    position: relative;
+    width: 100%;
+    height: 600px;
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+    </style>
 </head>
 <body>
 <header>
@@ -52,30 +99,6 @@ session_start();
         </div>
     </div>
 </footer>
-
-<script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const slides = document.querySelectorAll('.slide');
-            const prevBtn = document.querySelector('.prev');
-            const nextBtn = document.querySelector('.next');
-            let current = 0;
-
-            function updateSlide() {
-                slides.forEach((slide, i) => {
-                    slide.classList.toggle('active', i === current);
-                });
-            }
-
-            prevBtn.addEventListener('click', () => {
-                current = (current - 1 + slides.length) % slides.length;
-                updateSlide();
-            });
-
-            nextBtn.addEventListener('click', () => {
-                current = (current + 1) % slides.length;
-                updateSlide();
-            });
-        });
-    </script>
+<script src =scripts/galeria.js></script>
 </body>
 </html>
