@@ -5,9 +5,9 @@ session_start();
 $login_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Połączenie z bazą danych (zmień dane jak stworzysz bazę)
+        // Połączenie z bazą danych
         $host = 'localhost';
-        $db = 'domek';
+        $db = 'domki_letniskowe';
         $user = 'root';
         $pass = '';
         $mysqli = mysqli_connect($host, $user, $pass, $db);
