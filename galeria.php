@@ -146,6 +146,31 @@
                 align-items: center;
             }
         }
+main {
+    position: relative; /* Wymagane dla pozycjonowania tła */
+    min-height: 100vh;
+    padding-top: 85px; 
+    max-width: 100%;
+}
+
+.background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/gory-tlo.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3; /* Przezroczystość 30% */
+    z-index: -1; /* Pod treścią */
+}
+
+.content-wrapper {
+    position: relative; /* Utrzymuje treść nad tłem */
+    padding: 20px;
+}
+
     </style>
 </head>
 <body>
@@ -169,6 +194,7 @@
     <div class="background-layer"></div>
     
     <main class="galerie-container">
+    <div class="content-wrapper">
         <h1 class="galerie-tytul">Galerie Naszych Domków</h1>
         
         <!-- Zakładki -->
@@ -183,25 +209,57 @@
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Słoneczny"</h2>
             <div class="galeria-grid">
                 <div class="galeria-item" onclick="openLightbox('assets/domek1.jpg')">
-                    <img src="assets/domek1.jpg" alt="Domek Brzozowy - widok zewnętrzny" class="galeria-img">
+                    <img src="assets/domek1.jpg" alt="Domek Słoneczny - widok zewnętrzny" class="galeria-img">
                     <div class="galeria-opis">
                         <h3>Front domku</h3>
                         <p>Drewniana elewacja wtopiona w las</p>
                     </div>
                 </div>
                 
-                <div class="galeria-item" onclick="openLightbox('img/lesny/2.jpg')">
-                    <img src="img/lesny/2.jpg" alt="Salon w Domku Leśnym" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/1.jpg')">
+                    <img src="assets/sloneczny/1.jpg" alt="Salon w Domku Słonecznym" class="galeria-img">
                     <div class="galeria-opis">
                         <h3>Przytulny salon</h3>
-                        <p>Kominek i widok na drzewa</p>
+                        <p>Salon wraz z w pełni wyposażoną kuchnią</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/2.jpg')">
+                    <img src="assets/sloneczny/2.jpg" alt="Sypialnia w Domku Słonecznym" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Sypialnia</h3>
+                        <p>Piękna sypialnia wyposażona w 2 łóżka</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/3.jpg')">
+                    <img src="assets/sloneczny/3.jpg" alt="Łazienka w Domku Słonecznym" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Łazienka</h3>
+                        <p>Łazienka wraz z prysznicem</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/4.jpg')">
+                    <img src="assets/sloneczny/4.jpg" alt="Widok z okna" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Widok z okna</h3>
+                        <p>Zapierający dech w piersiach widok na pobliski strumyk</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/5.jpg')">
+                    <img src="assets/sloneczny/5.jpg" alt="Plan domku" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Plan domku</h3>
+                        <p>Plan domku Słonecznego</p>
                     </div>
                 </div>
                 
-                <!-- Dodaj więcej zdjęć -->
+                
             </div>
         </div>
-        
+    
         <!-- Galeria Domku Brzozowego -->
         <div id="domek2" class="galeria-content">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Brzozowy"</h2>
@@ -249,6 +307,7 @@
                 <!-- Dodaj więcej zdjęć -->
             </div>
         </div>
+    </div>
     </main>
     
     <!-- Lightbox -->
