@@ -1,5 +1,27 @@
 <?php
 session_start();
+// Połączenie z bazą danych (mysqli)
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$db   = 'domki_letniskowe';
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+$opinie = [];
+if ($conn) {
+    $sql = "SELECT o.content, o.rating, u.username, u.email, o.id, o.created_at 
+            FROM opinions o 
+            JOIN users u ON o.user_id = u.id 
+            ORDER BY o.id DESC";
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $opinie[] = $row;
+        }
+        mysqli_free_result($result);
+    }
+    mysqli_close($conn);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -122,64 +144,44 @@ session_start();
         <p style="text-align:center;">Poznaj opinie osób, które już u nas wypoczywały</p>
         
         <div class="opinie-grid">
-            <!-- W przyszłości można tutaj dodać wyświetlanie opinii z bazy danych -->
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Spędziliśmy cudowne dwa tygodnie w Domku Premium. Świetne wyposażenie, szczególnie jacuzzi, które stało się ulubioną atrakcją dla dzieci. Obsługa pomocna i zawsze uśmiechnięta. Na pewno tu wrócimy!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Karolina Malinowska</span>
-                    <span class="opinia-data">12.06.2023</span>
+            <?php foreach($opinie as $opinia): ?>
+                <div class="opinia-karta">
+                    <div class="gwiazdki">
+                        <?php
+                        $rating = (int)$opinia['rating'];
+                        for ($i = 1; $i <= 5; $i++) {
+                            echo $i <= $rating ? '★' : '☆';
+                        }
+                        ?>
+                    </div>
+                    <div class="opinia-tekst">
+                        <?= htmlspecialchars($opinia['content']) ?>
+                    </div>
+                    <div class="opinia-meta">
+                        <span class="opinia-autor"><?= htmlspecialchars($opinia['username']) ?></span>
+                        <span class="opinia-data">
+                            <?= date('d.m.Y H:i', strtotime($opinia['created_at'])) ?>
+                        </span>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★☆</div>
-                <p class="opinia-tekst">"Domek Słoneczny w pełni zasłużył na swoją nazwę. Piękne widoki, mnóstwo słońca i wygodne pomieszczenia. Minus za nieco słabe WiFi, choć może to i dobrze... odpoczęliśmy od telefonów."</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Piotr Wiśniewski</span>
-                    <span class="opinia-data">03.07.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Wybraliśmy z mężem Domek Brzozowy na naszą rocznicę. Cicho, spokojnie, romantycznie - dokładnie to, czego szukaliśmy. Możliwość wypożyczenia łódki to strzał w dziesiątkę!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Anna Kowalczyk</span>
-                    <span class="opinia-data">22.05.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Wspaniałe miejsce na rodzinny wypoczynek! Dzieci mogły bezpiecznie bawić się na plaży, a my odpoczywaliśmy na tarasie. Domki są świetnie wyposażone i bardzo czyste."</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Marek Nowak</span>
-                    <span class="opinia-data">15.08.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★☆☆</div>
-                <p class="opinia-tekst">"Piękna okolica i miła obsługa. Trochę przeszkadzał nam hałas z sąsiedniego domku, ale ogólnie pobyt był udany. Szczególnie polecam spacery po lesie!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Katarzyna Dąbrowska</span>
-                    <span class="opinia-data">02.09.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Przepiękna okolica i świetnie wyposażone domki. Wszystko zgodnie z opisem, a nawet lepiej. Obsługa zawsze chętna do pomocy. Polecam szczególnie dla rodzin z dziećmi!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Tomasz Lewandowski</span>
-                    <span class="opinia-data">10.07.2023</span>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
         
+        <?php if(isset($_SESSION['user_id'])): ?>
         <div class="dodaj-opinie">
             <h2>Dodaj swoją opinię</h2>
+            <?php if(isset($_SESSION['opinia_success'])): ?>
+                <div style="color:green;text-align:center;margin-bottom:1rem;">
+                    <?= htmlspecialchars($_SESSION['opinia_success']) ?>
+                </div>
+                <?php unset($_SESSION['opinia_success']); ?>
+            <?php endif; ?>
+            <?php if(isset($_SESSION['opinia_error'])): ?>
+                <div style="color:red;text-align:center;margin-bottom:1rem;">
+                    <?= htmlspecialchars($_SESSION['opinia_error']) ?>
+                </div>
+                <?php unset($_SESSION['opinia_error']); ?>
+            <?php endif; ?>
             <form action="dodaj_opinie.php" method="POST">
                 <div class="form-group">
                     <label>Ocena</label>
@@ -196,25 +198,18 @@ session_start();
                         <label for="star5">★</label>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="imie">Imię i nazwisko</label>
-                    <input type="text" id="imie" name="imie" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
                 <div class="form-group">
                     <label for="tresc">Twoja opinia</label>
                     <textarea id="tresc" name="tresc" required></textarea>
                 </div>
-                
                 <button type="submit" class="btn-rezerwuj">Dodaj opinię</button>
             </form>
         </div>
+        <?php else: ?>
+        <div class="dodaj-opinie" style="text-align:center;">
+            <p>Aby dodać opinię, <a href="login.php">zaloguj się</a>.</p>
+        </div>
+        <?php endif; ?>
     </main>
 
     <footer>

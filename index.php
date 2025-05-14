@@ -1,5 +1,28 @@
 <?php
 session_start();
+
+// Pobierz 3 najnowsze opinie z bazy
+$opinie = [];
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$db   = 'domki_letniskowe';
+$conn = mysqli_connect($host, $user, $pass, $db);
+if ($conn) {
+    $sql = "SELECT o.content, o.rating, u.username, o.created_at 
+            FROM opinions o 
+            JOIN users u ON o.user_id = u.id 
+            ORDER BY o.id DESC 
+            LIMIT 3";
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $opinie[] = $row;
+        }
+        mysqli_free_result($result);
+    }
+    mysqli_close($conn);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -61,18 +84,25 @@ session_start();
         <section class="opinie" id="opinie-slider">
             <h2>Opinie naszych gości</h2>
             <div class="opinie-container">
+                <?php foreach($opinie as $opinia): ?>
                 <div class="opinia">
-                    <p>"Wspaniałe miejsce na rodzinny wypoczynek!"</p>
-                    <cite>Anna K.</cite>
+                    <div class="gwiazdki" style="color:gold;font-size:1.2rem;">
+                        <?php
+                        $rating = (int)$opinia['rating'];
+                        for ($i = 1; $i <= 5; $i++) {
+                            echo $i <= $rating ? '★' : '☆';
+                        }
+                        ?>
+                    </div>
+                    <p>"<?= htmlspecialchars($opinia['content']) ?>"</p>
+                    <cite><?= htmlspecialchars($opinia['username']) ?>, <?= date('d.m.Y', strtotime($opinia['created_at'])) ?></cite>
                 </div>
+                <?php endforeach; ?>
+                <?php if (empty($opinie)): ?>
                 <div class="opinia">
-                    <p>"Przepiękna okolica i świetnie wyposażone domki"</p>
-                    <cite>Marek W.</cite>
+                    <p>Brak opinii do wyświetlenia.</p>
                 </div>
-                <div class="opinia">
-                    <p>"Na pewno tu wrócimy!"</p>
-                    <cite>Karolina M.</cite>
-                </div>
+                <?php endif; ?>
             </div>
         </section>
 
