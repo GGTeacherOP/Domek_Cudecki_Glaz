@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -185,16 +188,20 @@ main {
                 <li><a href="atrakcje.php">Atrakcje</a></li>
                 <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
                 <li><a href="admin.php">Panel admin</a></li>
-                <?php endif; ?>
+                <li class="login-btn" style="color:var(--primary-color); font-weight:bold; background:none;">
+                    Witaj, <?= htmlspecialchars($_SESSION['user_name']) ?>
+                </li>
+                <li class="login-btn"><a href="logout.php">Wyloguj</a></li>
+                <?php else: ?>
                 <li class="login-btn"><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
 </header>
 
     <div class="background-layer"></div>
     
-    <main class="galerie-container">
-    <div class="content-wrapper">
+    <main class="galerie-contain>
         <h1 class="galerie-tytul">Galerie Naszych Domków</h1>
         
         <!-- Zakładki -->

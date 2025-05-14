@@ -173,7 +173,10 @@ ALTER TABLE `reservations`
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 (1, 'AnnaK', 'anna@example.com', 'haslo1', 'client'),
 (2, 'MarekW', 'marek@example.com', 'haslo2', 'client'),
-(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client');
+(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client'),
+(4, 'AdminJan', 'jan.admin@example.com', 'bezpiecznehaslo1', 'admin'),
+(5, 'AdminEwa', 'ewa.admin@example.com', 'superadmin2', 'admin'),
+(6, 'AdminPiotr', 'piotr.admin@example.com', 'tajnehaslo3', 'admin');
 
 -- --------------------------------------------------------
 
