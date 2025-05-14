@@ -1,49 +1,46 @@
 <?php
 session_start();
 
-// Obsługa formularza logowania
-$login_error = '';
+$register_error = '';
+$register_success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // Połączenie z bazą danych
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $password2 = $_POST['password2'] ?? '';
+
+    if ($username === '' || $email === '' || $password === '' || $password2 === '') {
+        $register_error = 'Wszystkie pola są wymagane.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $register_error = 'Nieprawidłowy adres email.';
+    } elseif ($password !== $password2) {
+        $register_error = 'Hasła nie są takie same.';
+    } else {
         $host = 'localhost';
         $db = 'domki_letniskowe';
         $user = 'root';
         $pass = '';
         $mysqli = mysqli_connect($host, $user, $pass, $db);
 
-        if (mysqli_connect_errno()) {
-            throw new Exception('Błąd połączenia z bazą danych.');
-        }
-
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        // Sprawdzenie użytkownika (hasło jako zwykły tekst, nieszyfrowane)
-        $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email='$email' LIMIT 1");
-        
-        if (!$result) {
-            throw new Exception('Błąd zapytania do bazy danych.');
-        }
-        
-        if ($row = mysqli_fetch_assoc($result)) {
-            if ($password === $row['password']) {
-                $_SESSION['user_id'] = $row['id'];
-                $_SESSION['user_email'] = $row['email'];
-                $_SESSION['user_name'] = $row['username']; // Dodaj nazwę użytkownika do sesji
-                $_SESSION['user_role'] = $row['rola'];
-                header('Location: index.php');
-                exit;
-            } else {
-                throw new Exception('Nieprawidłowy email lub hasło.');
-            }
+        if (!$mysqli) {
+            $register_error = 'Błąd połączenia z bazą danych.';
         } else {
-            throw new Exception('Nieprawidłowy email lub hasło.');
-        }
-    } catch (Exception $e) {
-        $login_error = $e->getMessage();
-    } finally {
-        if (isset($mysqli) && $mysqli) {
+            $username_esc = mysqli_real_escape_string($mysqli, $username);
+            $email_esc = mysqli_real_escape_string($mysqli, $email);
+            $password_esc = mysqli_real_escape_string($mysqli, $password); // UWAGA: hasła nie są szyfrowane
+
+            // Sprawdź czy email lub username już istnieje
+            $check = mysqli_query($mysqli, "SELECT id FROM users WHERE email='$email_esc' OR username='$username_esc' LIMIT 1");
+            if ($check && mysqli_num_rows($check) > 0) {
+                $register_error = 'Użytkownik o podanym emailu lub nazwie już istnieje.';
+            } else {
+                $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username_esc', '$email_esc', '$password_esc', 'client')";
+                if (mysqli_query($mysqli, $sql)) {
+                    $register_success = 'Rejestracja zakończona sukcesem! Możesz się teraz zalogować.';
+                } else {
+                    $register_error = 'Błąd podczas rejestracji.';
+                }
+            }
             mysqli_close($mysqli);
         }
     }
@@ -53,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Logowanie</title>
+    <title>Rejestracja</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .login-container {
+        .register-container {
             max-width: 400px;
             margin: 120px auto 0 auto;
             background: var(--light-bg);
@@ -64,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .login-container h2 {
+        .register-container h2 {
             text-align: center;
             margin-bottom: 2rem;
         }
@@ -83,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 5px;
             font-size: 1rem;
         }
-        .btn-login {
+        .btn-register {
             background: var(--accent-color);
             color: white;
             border: none;
@@ -94,11 +91,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             transition: background 0.3s;
         }
-        .btn-login:hover {
+        .btn-register:hover {
             background: #38a169;
         }
-        .login-error {
+        .register-error {
             color: red;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .register-success {
+            color: green;
             text-align: center;
             margin-bottom: 1rem;
         }
@@ -127,24 +129,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </nav>
     </header>
     <main>
-        <div class="login-container">
-            <h2>Logowanie</h2>
-            <?php if ($login_error): ?>
-                <div class="login-error"><?php echo htmlspecialchars($login_error); ?></div>
+        <div class="register-container">
+            <h2>Rejestracja</h2>
+            <?php if ($register_error): ?>
+                <div class="register-error"><?= htmlspecialchars($register_error) ?></div>
+            <?php endif; ?>
+            <?php if ($register_success): ?>
+                <div class="register-success"><?= htmlspecialchars($register_success) ?></div>
             <?php endif; ?>
             <form method="POST" autocomplete="off">
                 <div class="form-group">
+                    <label for="username">Nazwa użytkownika</label>
+                    <input type="text" id="username" name="username" required value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
+                </div>
+                <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required autofocus>
+                    <input type="email" id="email" name="email" required value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>">
                 </div>
                 <div class="form-group">
                     <label for="password">Hasło</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn-login">Zaloguj się</button>
+                <div class="form-group">
+                    <label for="password2">Powtórz hasło</label>
+                    <input type="password" id="password2" name="password2" required>
+                </div>
+                <button type="submit" class="btn-register">Zarejestruj się</button>
             </form>
             <div style="text-align:center;margin-top:1rem;">
-                Nie masz konta? <a href="register.php">Zarejestruj się</a>
+                Masz już konto? <a href="login.php">Zaloguj się</a>
             </div>
         </div>
     </main>
