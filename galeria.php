@@ -187,7 +187,7 @@ main {
                 <li><a href="opinie.php">Opinie</a></li>
                 <li><a href="atrakcje.php">Atrakcje</a></li>
                 <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
-                <li><a href="admin.php">Panel admin</a></li>
+                <li><a href="admin.php">Panel użytkownika</a></li>
                 <li class="login-btn" style="color:var(--primary-color); font-weight:bold; background:none;">
                     Witaj, <?= htmlspecialchars($_SESSION['user_name']) ?>
                 </li>
