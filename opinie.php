@@ -133,9 +133,14 @@ if ($conn) {
                 <li><a href="opinie.php">Opinie</a></li>
                 <li><a href="atrakcje.php">Atrakcje</a></li>
                 <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
-                <li><a href="admin.php">Panel admin</a></li>
-                <?php endif; ?>
+                <li><a href="admin.php">Panel użytkownika</a></li>
+                <li class="login-btn" style="color:var(--primary-color); font-weight:bold; background:none;">
+                    Witaj, <?= htmlspecialchars($_SESSION['user_name']) ?>
+                </li>
+                <li class="login-btn"><a href="logout.php">Wyloguj</a></li>
+                <?php else: ?>
                 <li class="login-btn"><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </header>
@@ -187,16 +192,16 @@ if ($conn) {
                 <div class="form-group">
                     <label>Ocena</label>
                     <div class="star-rating">
-                        <input type="radio" id="star1" name="ocena" value="1">
-                        <label for="star1">★</label>
-                        <input type="radio" id="star2" name="ocena" value="2">
-                        <label for="star2">★</label>
-                        <input type="radio" id="star3" name="ocena" value="3">
-                        <label for="star3">★</label>
-                        <input type="radio" id="star4" name="ocena" value="4">
-                        <label for="star4">★</label>
                         <input type="radio" id="star5" name="ocena" value="5" checked>
                         <label for="star5">★</label>
+                        <input type="radio" id="star4" name="ocena" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="ocena" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="ocena" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="ocena" value="1">
+                        <label for="star1">★</label>
                     </div>
                 </div>
                 <div class="form-group">
