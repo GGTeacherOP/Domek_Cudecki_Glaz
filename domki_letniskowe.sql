@@ -163,6 +163,27 @@ ALTER TABLE `opinions`
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Przykładowi użytkownicy (jeśli nie istnieją, dodaj przed opiniami)
+--
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
+(1, 'AnnaK', 'anna@example.com', 'haslo1', 'client'),
+(2, 'MarekW', 'marek@example.com', 'haslo2', 'client'),
+(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client');
+
+-- --------------------------------------------------------
+
+--
+-- Przykładowe opinie
+--
+INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`) VALUES
+(1, 1, 'Wspaniałe miejsce na rodzinny wypoczynek!', 5),
+(2, 2, 'Przepiękna okolica i świetnie wyposażone domki.', 4),
+(3, 3, 'Na pewno tu wrócimy!', 5);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
