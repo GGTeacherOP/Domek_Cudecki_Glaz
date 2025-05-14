@@ -167,8 +167,21 @@ if ($conn) {
             <?php endforeach; ?>
         </div>
         
+        <?php if(isset($_SESSION['user_id'])): ?>
         <div class="dodaj-opinie">
             <h2>Dodaj swoją opinię</h2>
+            <?php if(isset($_SESSION['opinia_success'])): ?>
+                <div style="color:green;text-align:center;margin-bottom:1rem;">
+                    <?= htmlspecialchars($_SESSION['opinia_success']) ?>
+                </div>
+                <?php unset($_SESSION['opinia_success']); ?>
+            <?php endif; ?>
+            <?php if(isset($_SESSION['opinia_error'])): ?>
+                <div style="color:red;text-align:center;margin-bottom:1rem;">
+                    <?= htmlspecialchars($_SESSION['opinia_error']) ?>
+                </div>
+                <?php unset($_SESSION['opinia_error']); ?>
+            <?php endif; ?>
             <form action="dodaj_opinie.php" method="POST">
                 <div class="form-group">
                     <label>Ocena</label>
@@ -185,25 +198,18 @@ if ($conn) {
                         <label for="star5">★</label>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="imie">Imię i nazwisko</label>
-                    <input type="text" id="imie" name="imie" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
                 <div class="form-group">
                     <label for="tresc">Twoja opinia</label>
                     <textarea id="tresc" name="tresc" required></textarea>
                 </div>
-                
                 <button type="submit" class="btn-rezerwuj">Dodaj opinię</button>
             </form>
         </div>
+        <?php else: ?>
+        <div class="dodaj-opinie" style="text-align:center;">
+            <p>Aby dodać opinię, <a href="login.php">zaloguj się</a>.</p>
+        </div>
+        <?php endif; ?>
     </main>
 
     <footer>
