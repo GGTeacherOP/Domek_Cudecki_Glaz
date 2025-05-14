@@ -9,7 +9,7 @@ $db   = 'domki_letniskowe';
 $conn = mysqli_connect($host, $user, $pass, $db);
 $opinie = [];
 if ($conn) {
-    $sql = "SELECT o.content, o.rating, u.username, u.email, o.id 
+    $sql = "SELECT o.content, o.rating, u.username, u.email, o.id, o.created_at 
             FROM opinions o 
             JOIN users u ON o.user_id = u.id 
             ORDER BY o.id DESC";
@@ -159,7 +159,9 @@ if ($conn) {
                     </div>
                     <div class="opinia-meta">
                         <span class="opinia-autor"><?= htmlspecialchars($opinia['username']) ?></span>
-                        <!-- <span class="opinia-data">brak daty</span> -->
+                        <span class="opinia-data">
+                            <?= date('d.m.Y H:i', strtotime($opinia['created_at'])) ?>
+                        </span>
                     </div>
                 </div>
             <?php endforeach; ?>
