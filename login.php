@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
                 $_SESSION['user_name'] = $row['username']; // Dodaj nazwę użytkownika do sesji
-                $_SESSION['user_role'] = $row['rola'];
+                $_SESSION['user_role'] = $row['role'];
                 header('Location: index.php');
                 exit;
             } else {
