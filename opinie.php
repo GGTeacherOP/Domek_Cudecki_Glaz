@@ -122,60 +122,7 @@ session_start();
         <p style="text-align:center;">Poznaj opinie osób, które już u nas wypoczywały</p>
         
         <div class="opinie-grid">
-            <!-- W przyszłości można tutaj dodać wyświetlanie opinii z bazy danych -->
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Spędziliśmy cudowne dwa tygodnie w Domku Premium. Świetne wyposażenie, szczególnie jacuzzi, które stało się ulubioną atrakcją dla dzieci. Obsługa pomocna i zawsze uśmiechnięta. Na pewno tu wrócimy!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Karolina Malinowska</span>
-                    <span class="opinia-data">12.06.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★☆</div>
-                <p class="opinia-tekst">"Domek Słoneczny w pełni zasłużył na swoją nazwę. Piękne widoki, mnóstwo słońca i wygodne pomieszczenia. Minus za nieco słabe WiFi, choć może to i dobrze... odpoczęliśmy od telefonów."</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Piotr Wiśniewski</span>
-                    <span class="opinia-data">03.07.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Wybraliśmy z mężem Domek Brzozowy na naszą rocznicę. Cicho, spokojnie, romantycznie - dokładnie to, czego szukaliśmy. Możliwość wypożyczenia łódki to strzał w dziesiątkę!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Anna Kowalczyk</span>
-                    <span class="opinia-data">22.05.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Wspaniałe miejsce na rodzinny wypoczynek! Dzieci mogły bezpiecznie bawić się na plaży, a my odpoczywaliśmy na tarasie. Domki są świetnie wyposażone i bardzo czyste."</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Marek Nowak</span>
-                    <span class="opinia-data">15.08.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★☆☆</div>
-                <p class="opinia-tekst">"Piękna okolica i miła obsługa. Trochę przeszkadzał nam hałas z sąsiedniego domku, ale ogólnie pobyt był udany. Szczególnie polecam spacery po lesie!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Katarzyna Dąbrowska</span>
-                    <span class="opinia-data">02.09.2023</span>
-                </div>
-            </div>
-            
-            <div class="opinia-karta">
-                <div class="gwiazdki">★★★★★</div>
-                <p class="opinia-tekst">"Przepiękna okolica i świetnie wyposażone domki. Wszystko zgodnie z opisem, a nawet lepiej. Obsługa zawsze chętna do pomocy. Polecam szczególnie dla rodzin z dziećmi!"</p>
-                <div class="opinia-meta">
-                    <span class="opinia-autor">Tomasz Lewandowski</span>
-                    <span class="opinia-data">10.07.2023</span>
-                </div>
-            </div>
+            <!-- Tutaj będą wyświetlane opinie z bazy danych -->
         </div>
         
         <div class="dodaj-opinie">
