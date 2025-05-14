@@ -64,6 +64,7 @@ main{
                 <li><a href="galeria.php">Galeria</a></li>
                 <li><a href="kontakt.php">Kontakt</a></li>
                 <li><a href="opinie.php">Opinie</a></li>
+                <li><a href="atrakcje.php">Atrakcje</a></li>
                 <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
                 <li><a href="admin.php">Panel admin</a></li>
                 <?php endif; ?>
