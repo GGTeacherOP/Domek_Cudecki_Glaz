@@ -1,5 +1,27 @@
 <?php
 session_start();
+// Połączenie z bazą danych (mysqli)
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$db   = 'domki_letniskowe';
+
+$conn = mysqli_connect($host, $user, $pass, $db);
+$opinie = [];
+if ($conn) {
+    $sql = "SELECT o.content, o.rating, u.username, u.email, o.id 
+            FROM opinions o 
+            JOIN users u ON o.user_id = u.id 
+            ORDER BY o.id DESC";
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $opinie[] = $row;
+        }
+        mysqli_free_result($result);
+    }
+    mysqli_close($conn);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -122,7 +144,25 @@ session_start();
         <p style="text-align:center;">Poznaj opinie osób, które już u nas wypoczywały</p>
         
         <div class="opinie-grid">
-            <!-- Tutaj będą wyświetlane opinie z bazy danych -->
+            <?php foreach($opinie as $opinia): ?>
+                <div class="opinia-karta">
+                    <div class="gwiazdki">
+                        <?php
+                        $rating = (int)$opinia['rating'];
+                        for ($i = 1; $i <= 5; $i++) {
+                            echo $i <= $rating ? '★' : '☆';
+                        }
+                        ?>
+                    </div>
+                    <div class="opinia-tekst">
+                        <?= htmlspecialchars($opinia['content']) ?>
+                    </div>
+                    <div class="opinia-meta">
+                        <span class="opinia-autor"><?= htmlspecialchars($opinia['username']) ?></span>
+                        <!-- <span class="opinia-data">brak daty</span> -->
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
         
         <div class="dodaj-opinie">
