@@ -192,16 +192,16 @@ if ($conn) {
                 <div class="form-group">
                     <label>Ocena</label>
                     <div class="star-rating">
-                        <input type="radio" id="star1" name="ocena" value="1">
-                        <label for="star1">★</label>
-                        <input type="radio" id="star2" name="ocena" value="2">
-                        <label for="star2">★</label>
-                        <input type="radio" id="star3" name="ocena" value="3">
-                        <label for="star3">★</label>
-                        <input type="radio" id="star4" name="ocena" value="4">
-                        <label for="star4">★</label>
                         <input type="radio" id="star5" name="ocena" value="5" checked>
                         <label for="star5">★</label>
+                        <input type="radio" id="star4" name="ocena" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="ocena" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="ocena" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="ocena" value="1">
+                        <label for="star1">★</label>
                     </div>
                 </div>
                 <div class="form-group">
