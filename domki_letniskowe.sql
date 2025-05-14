@@ -54,7 +54,8 @@ CREATE TABLE `opinions` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `content` text NOT NULL,
-  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5)
+  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -163,6 +164,27 @@ ALTER TABLE `opinions`
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Przykładowi użytkownicy (jeśli nie istnieją, dodaj przed opiniami)
+--
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
+(1, 'AnnaK', 'anna@example.com', 'haslo1', 'client'),
+(2, 'MarekW', 'marek@example.com', 'haslo2', 'client'),
+(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client');
+
+-- --------------------------------------------------------
+
+--
+-- Przykładowe opinie
+--
+INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`, `created_at`) VALUES
+(1, 1, 'Wspaniałe miejsce na rodzinny wypoczynek!', 5, '2024-05-01 12:00:00'),
+(2, 2, 'Przepiękna okolica i świetnie wyposażone domki.', 4, '2024-05-03 15:30:00'),
+(3, 3, 'Na pewno tu wrócimy!', 5, '2024-05-05 09:45:00');
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
