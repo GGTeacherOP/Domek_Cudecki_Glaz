@@ -1,5 +1,75 @@
 <?php
 session_start();
+
+$rezerwacja_success = '';
+$rezerwacja_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Połączenie z bazą
+    $host = 'localhost';
+    $user = 'root';
+    $pass = '';
+    $db   = 'domki_letniskowe';
+    $conn = mysqli_connect($host, $user, $pass, $db);
+
+    // Pobierz dane z formularza
+    $domek = $_POST['domek'] ?? '';
+    $data_przyjazdu = $_POST['data_przyjazdu'] ?? '';
+    $data_wyjazdu = $_POST['data_wyjazdu'] ?? '';
+    $ilosc_osob = (int)($_POST['ilosc_osob'] ?? 1);
+    $imie = trim($_POST['imie'] ?? '');
+    $nazwisko = trim($_POST['nazwisko'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $telefon = trim($_POST['telefon'] ?? '');
+    $uwagi = trim($_POST['uwagi'] ?? '');
+
+    // Prosta walidacja
+    if (
+        !$domek || !$data_przyjazdu || !$data_wyjazdu || !$imie || !$nazwisko || !$email || !$telefon
+        || !filter_var($email, FILTER_VALIDATE_EMAIL)
+        || strtotime($data_przyjazdu) === false || strtotime($data_wyjazdu) === false
+        || strtotime($data_wyjazdu) <= strtotime($data_przyjazdu)
+    ) {
+        $rezerwacja_error = 'Wszystkie pola są wymagane, a daty muszą być poprawne.';
+    } elseif (!$conn) {
+        $rezerwacja_error = 'Błąd połączenia z bazą danych.';
+    } else {
+        // Pobierz id domku z tabeli cabins
+        $domek_map = [
+            'sloneczny' => 1,
+            'brzozowy' => 2,
+            'premium' => 3
+        ];
+        $cabin_id = $domek_map[$domek] ?? null;
+
+        if (!$cabin_id) {
+            $rezerwacja_error = 'Wybrano nieprawidłowy domek.';
+        } else {
+            // Jeśli użytkownik zalogowany, pobierz jego id, w przeciwnym razie NULL
+            $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'NULL';
+
+            // Zapisz rezerwację
+            $imie_esc = mysqli_real_escape_string($conn, $imie);
+            $nazwisko_esc = mysqli_real_escape_string($conn, $nazwisko);
+            $email_esc = mysqli_real_escape_string($conn, $email);
+            $telefon_esc = mysqli_real_escape_string($conn, $telefon);
+            $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
+
+            // Dodatkowe dane osobowe można zapisać w osobnej tabeli lub w uwagach (tu: w uwagach)
+            $uwagi_full = "Imię: $imie_esc, Nazwisko: $nazwisko_esc, Email: $email_esc, Telefon: $telefon_esc. Uwagi: $uwagi_esc";
+
+            $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status) VALUES (" .
+                ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending')";
+
+            if (mysqli_query($conn, $sql)) {
+                $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';
+            } else {
+                $rezerwacja_error = 'Błąd podczas zapisywania rezerwacji.';
+            }
+            mysqli_close($conn);
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -129,7 +199,15 @@ session_start();
     <main style="padding-top: 100px;">
         <h1 style="text-align:center;">Rezerwacja</h1>
         <p style="text-align:center;">Wypełnij formularz, aby zarezerwować pobyt w naszym ośrodku</p>
-        
+        <?php if ($rezerwacja_success): ?>
+            <div style="background:#d4edda;color:#155724;padding:1rem;border-radius:8px;text-align:center;margin:1rem auto;max-width:600px;">
+                <?= htmlspecialchars($rezerwacja_success) ?>
+            </div>
+        <?php elseif ($rezerwacja_error): ?>
+            <div style="background:#f8d7da;color:#721c24;padding:1rem;border-radius:8px;text-align:center;margin:1rem auto;max-width:600px;">
+                <?= htmlspecialchars($rezerwacja_error) ?>
+            </div>
+        <?php endif; ?>
         <?php
         // Pobranie parametru domku z adresu URL (jeśli istnieje)
         $selected_domek = isset($_GET['domek']) ? $_GET['domek'] : '';
@@ -138,7 +216,7 @@ session_start();
         <div class="rezerwacja-container">
             <div class="rezerwacja-form">
                 <h2>Dane rezerwacji</h2>
-                <form action="zapisz_rezerwacje.php" method="POST" id="rezerwacja-form">
+                <form action="" method="POST" id="rezerwacja-form">
                     <div class="form-group">
                         <label for="domek">Wybierz domek</label>
                         <select id="domek" name="domek" required>
