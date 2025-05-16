@@ -50,24 +50,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$cabin_id) {
             $rezerwacja_error = 'Wybrano nieprawidłowy domek.';
         } else {
-            // Jeśli użytkownik zalogowany, pobierz jego id, w przeciwnym razie NULL
-            $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'NULL';
-
-            // Zapisz rezerwację z dodatkowymi polami
-            $imie_esc = mysqli_real_escape_string($conn, $imie);
-            $nazwisko_esc = mysqli_real_escape_string($conn, $nazwisko);
-            $telefon_esc = mysqli_real_escape_string($conn, $telefon);
-            $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
-
-            $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi) VALUES (" .
-                ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc')";
-
-            if (mysqli_query($conn, $sql)) {
-                $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';
+            // Sprawdź kolizję terminów
+            $start = mysqli_real_escape_string($conn, $data_przyjazdu);
+            $end = mysqli_real_escape_string($conn, $data_wyjazdu);
+            $check_sql = "SELECT 1 FROM reservations 
+                WHERE cabin_id = $cabin_id 
+                AND status != 'cancelled'
+                AND (
+                    (start_date < '$end' AND end_date > '$start')
+                )
+                LIMIT 1";
+            $check_res = mysqli_query($conn, $check_sql);
+            if ($check_res && mysqli_num_rows($check_res) > 0) {
+                $rezerwacja_error = 'Wybrany domek jest już zarezerwowany w tym terminie. Proszę wybrać inne daty lub domek.';
             } else {
-                $rezerwacja_error = 'Błąd podczas zapisywania rezerwacji.';
+                // Jeśli użytkownik zalogowany, pobierz jego id, w przeciwnym razie NULL
+                $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'NULL';
+
+                // Zapisz rezerwację z dodatkowymi polami
+                $imie_esc = mysqli_real_escape_string($conn, $imie);
+                $nazwisko_esc = mysqli_real_escape_string($conn, $nazwisko);
+                $telefon_esc = mysqli_real_escape_string($conn, $telefon);
+                $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
+
+                $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi) VALUES (" .
+                    ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc')";
+
+                if (mysqli_query($conn, $sql)) {
+                    $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';
+                } else {
+                    $rezerwacja_error = 'Błąd podczas zapisywania rezerwacji.';
+                }
+                mysqli_close($conn);
             }
-            mysqli_close($conn);
         }
     }
 }
