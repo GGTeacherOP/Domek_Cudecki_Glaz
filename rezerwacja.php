@@ -1,5 +1,106 @@
 <?php
 session_start();
+
+$rezerwacja_success = '';
+$rezerwacja_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Połączenie z bazą
+    $host = 'localhost';
+    $user = 'root';
+    $pass = '';
+    $db   = 'domki_letniskowe';
+    $conn = mysqli_connect($host, $user, $pass, $db);
+
+    // Pobierz dane z formularza
+    $domek = $_POST['domek'] ?? '';
+    $data_przyjazdu = $_POST['data_przyjazdu'] ?? '';
+    $data_wyjazdu = $_POST['data_wyjazdu'] ?? '';
+    $ilosc_osob = (int)($_POST['ilosc_osob'] ?? 1);
+    $imie = trim($_POST['imie'] ?? '');
+    $nazwisko = trim($_POST['nazwisko'] ?? '');
+    // Pobierz email z sesji jeśli zalogowany, w przeciwnym razie z formularza
+    if (isset($_SESSION['user_email'])) {
+        $email = $_SESSION['user_email'];
+    } else {
+        $email = trim($_POST['email'] ?? '');
+    }
+    $telefon = trim($_POST['telefon'] ?? '');
+    $uwagi = trim($_POST['uwagi'] ?? '');
+
+    // Prosta walidacja
+    if (
+        !$domek || !$data_przyjazdu || !$data_wyjazdu || !$imie || !$nazwisko || !$email || !$telefon
+        || !filter_var($email, FILTER_VALIDATE_EMAIL)
+        || strtotime($data_przyjazdu) === false || strtotime($data_wyjazdu) === false
+        || strtotime($data_wyjazdu) <= strtotime($data_przyjazdu)
+    ) {
+        $rezerwacja_error = 'Wszystkie pola są wymagane, a daty muszą być poprawne.';
+    } elseif (!$conn) {
+        $rezerwacja_error = 'Błąd połączenia z bazą danych.';
+    } else {
+        // Pobierz id domku z tabeli cabins
+        $domek_map = [
+            'sloneczny' => 1,
+            'brzozowy' => 2,
+            'premium' => 3
+        ];
+        $cabin_id = $domek_map[$domek] ?? null;
+
+        // Oblicz kwotę do zapłaty
+        $cenaDzien = 0;
+        switch($domek) {
+            case 'sloneczny': $cenaDzien = 350; break;
+            case 'brzozowy': $cenaDzien = 280; break;
+            case 'premium': $cenaDzien = 550; break;
+        }
+        $dni = 0;
+        if ($data_przyjazdu && $data_wyjazdu) {
+            $przyjazd = strtotime($data_przyjazdu);
+            $wyjazd = strtotime($data_wyjazdu);
+            $dni = ($wyjazd - $przyjazd) / (60*60*24);
+        }
+        $do_zaplaty = $dni > 0 ? $dni * $cenaDzien : 0;
+
+        if (!$cabin_id) {
+            $rezerwacja_error = 'Wybrano nieprawidłowy domek.';
+        } else {
+            // Sprawdź kolizję terminów
+            $start = mysqli_real_escape_string($conn, $data_przyjazdu);
+            $end = mysqli_real_escape_string($conn, $data_wyjazdu);
+            $check_sql = "SELECT 1 FROM reservations 
+                WHERE cabin_id = $cabin_id 
+                AND status != 'cancelled'
+                AND (
+                    (start_date < '$end' AND end_date > '$start')
+                )
+                LIMIT 1";
+            $check_res = mysqli_query($conn, $check_sql);
+            if ($check_res && mysqli_num_rows($check_res) > 0) {
+                $rezerwacja_error = 'Wybrany domek jest już zarezerwowany w tym terminie. Proszę wybrać inne daty lub domek.';
+            } else {
+                // Jeśli użytkownik zalogowany, pobierz jego id, w przeciwnym razie NULL
+                $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'NULL';
+
+                // Zapisz rezerwację z dodatkowymi polami
+                $imie_esc = mysqli_real_escape_string($conn, $imie);
+                $nazwisko_esc = mysqli_real_escape_string($conn, $nazwisko);
+                $telefon_esc = mysqli_real_escape_string($conn, $telefon);
+                $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
+
+                $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi, do_zaplaty) VALUES (" .
+                    ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc', '$do_zaplaty')";
+
+                if (mysqli_query($conn, $sql)) {
+                    $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';
+                } else {
+                    $rezerwacja_error = 'Błąd podczas zapisywania rezerwacji.';
+                }
+                mysqli_close($conn);
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -129,7 +230,15 @@ session_start();
     <main style="padding-top: 100px;">
         <h1 style="text-align:center;">Rezerwacja</h1>
         <p style="text-align:center;">Wypełnij formularz, aby zarezerwować pobyt w naszym ośrodku</p>
-        
+        <?php if ($rezerwacja_success): ?>
+            <div style="background:#d4edda;color:#155724;padding:1rem;border-radius:8px;text-align:center;margin:1rem auto;max-width:600px;">
+                <?= htmlspecialchars($rezerwacja_success) ?>
+            </div>
+        <?php elseif ($rezerwacja_error): ?>
+            <div style="background:#f8d7da;color:#721c24;padding:1rem;border-radius:8px;text-align:center;margin:1rem auto;max-width:600px;">
+                <?= htmlspecialchars($rezerwacja_error) ?>
+            </div>
+        <?php endif; ?>
         <?php
         // Pobranie parametru domku z adresu URL (jeśli istnieje)
         $selected_domek = isset($_GET['domek']) ? $_GET['domek'] : '';
@@ -138,7 +247,7 @@ session_start();
         <div class="rezerwacja-container">
             <div class="rezerwacja-form">
                 <h2>Dane rezerwacji</h2>
-                <form action="zapisz_rezerwacje.php" method="POST" id="rezerwacja-form">
+                <form action="" method="POST" id="rezerwacja-form">
                     <div class="form-group">
                         <label for="domek">Wybierz domek</label>
                         <select id="domek" name="domek" required>
@@ -186,11 +295,17 @@ session_start();
                             <input type="text" id="nazwisko" name="nazwisko" required>
                         </div>
                     </div>
-                    
+                    <?php if (!isset($_SESSION['user_email'])): ?>
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
+                    <?php else: ?>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($_SESSION['user_email']) ?>" readonly style="background:#eee;">
+                    </div>
+                    <?php endif; ?>
                     
                     <div class="form-group">
                         <label for="telefon">Numer telefonu</label>
