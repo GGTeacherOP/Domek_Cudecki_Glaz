@@ -70,7 +70,11 @@ CREATE TABLE `reservations` (
   `cabin_id` int(11) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `status` enum('pending','confirmed','cancelled') DEFAULT 'pending'
+  `status` enum('pending','confirmed','cancelled') DEFAULT 'pending',
+  `imie` varchar(100) DEFAULT NULL,
+  `nazwisko` varchar(100) DEFAULT NULL,
+  `telefon` varchar(40) DEFAULT NULL,
+  `uwagi` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

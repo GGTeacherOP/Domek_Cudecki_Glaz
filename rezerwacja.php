@@ -19,7 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ilosc_osob = (int)($_POST['ilosc_osob'] ?? 1);
     $imie = trim($_POST['imie'] ?? '');
     $nazwisko = trim($_POST['nazwisko'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    // Pobierz email z sesji jeśli zalogowany, w przeciwnym razie z formularza
+    if (isset($_SESSION['user_email'])) {
+        $email = $_SESSION['user_email'];
+    } else {
+        $email = trim($_POST['email'] ?? '');
+    }
     $telefon = trim($_POST['telefon'] ?? '');
     $uwagi = trim($_POST['uwagi'] ?? '');
 
@@ -48,18 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Jeśli użytkownik zalogowany, pobierz jego id, w przeciwnym razie NULL
             $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'NULL';
 
-            // Zapisz rezerwację
+            // Zapisz rezerwację z dodatkowymi polami
             $imie_esc = mysqli_real_escape_string($conn, $imie);
             $nazwisko_esc = mysqli_real_escape_string($conn, $nazwisko);
-            $email_esc = mysqli_real_escape_string($conn, $email);
             $telefon_esc = mysqli_real_escape_string($conn, $telefon);
             $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
 
-            // Dodatkowe dane osobowe można zapisać w osobnej tabeli lub w uwagach (tu: w uwagach)
-            $uwagi_full = "Imię: $imie_esc, Nazwisko: $nazwisko_esc, Email: $email_esc, Telefon: $telefon_esc. Uwagi: $uwagi_esc";
-
-            $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status) VALUES (" .
-                ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending')";
+            $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi) VALUES (" .
+                ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc')";
 
             if (mysqli_query($conn, $sql)) {
                 $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';
@@ -264,11 +265,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" id="nazwisko" name="nazwisko" required>
                         </div>
                     </div>
-                    
+                    <?php if (!isset($_SESSION['user_email'])): ?>
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
+                    <?php else: ?>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($_SESSION['user_email']) ?>" readonly style="background:#eee;">
+                    </div>
+                    <?php endif; ?>
                     
                     <div class="form-group">
                         <label for="telefon">Numer telefonu</label>
