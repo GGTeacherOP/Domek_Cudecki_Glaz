@@ -141,14 +141,21 @@ if ($user_role === 'admin') {
     <link rel="stylesheet" href="css/style.css">
     <style>
         .panel-container {
-            max-width: none;
-            width: 100%;
-            margin: 120px 0 0 0;
+            max-width: 98vw;
+            margin: 120px auto 0 auto;
             background: var(--light-bg);
             padding: 2rem 2vw;
-            border-radius: 0;
+            border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow-x: auto;
+        }
+        /* Nadpisanie stylu main z globalnego CSS */
+        main {
+            max-width: 100vw !important;
+            width: 100vw !important;
+            margin: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
         .panel-container h2 { text-align:center; margin-bottom:2rem;}
         .form-group { margin-bottom: 1.5rem;}
@@ -179,6 +186,7 @@ if ($user_role === 'admin') {
         @media (max-width: 900px) {
             .panel-container {
                 padding: 1rem 0.5rem;
+                max-width: 99vw;
             }
             .opinie-admin-table, .rezerwacje-admin-table {
                 font-size: 0.95em;
@@ -187,6 +195,7 @@ if ($user_role === 'admin') {
         @media (max-width: 600px) {
             .panel-container {
                 padding: 0.5rem 0.2rem;
+                max-width: 100vw;
             }
             .opinie-admin-table, .rezerwacje-admin-table {
                 font-size: 0.85em;
