@@ -47,6 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         $cabin_id = $domek_map[$domek] ?? null;
 
+        // Oblicz kwotę do zapłaty
+        $cenaDzien = 0;
+        switch($domek) {
+            case 'sloneczny': $cenaDzien = 350; break;
+            case 'brzozowy': $cenaDzien = 280; break;
+            case 'premium': $cenaDzien = 550; break;
+        }
+        $dni = 0;
+        if ($data_przyjazdu && $data_wyjazdu) {
+            $przyjazd = strtotime($data_przyjazdu);
+            $wyjazd = strtotime($data_wyjazdu);
+            $dni = ($wyjazd - $przyjazd) / (60*60*24);
+        }
+        $do_zaplaty = $dni > 0 ? $dni * $cenaDzien : 0;
+
         if (!$cabin_id) {
             $rezerwacja_error = 'Wybrano nieprawidłowy domek.';
         } else {
@@ -73,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $telefon_esc = mysqli_real_escape_string($conn, $telefon);
                 $uwagi_esc = mysqli_real_escape_string($conn, $uwagi);
 
-                $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi) VALUES (" .
-                    ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc')";
+                $sql = "INSERT INTO reservations (user_id, cabin_id, start_date, end_date, status, imie, nazwisko, telefon, uwagi, do_zaplaty) VALUES (" .
+                    ($user_id === 'NULL' ? "NULL" : $user_id) . ", $cabin_id, '$data_przyjazdu', '$data_wyjazdu', 'pending', '$imie_esc', '$nazwisko_esc', '$telefon_esc', '$uwagi_esc', '$do_zaplaty')";
 
                 if (mysqli_query($conn, $sql)) {
                     $rezerwacja_success = 'Rezerwacja została zapisana! Skontaktujemy się z Tobą w celu potwierdzenia.';

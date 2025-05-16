@@ -89,7 +89,7 @@ if ($user_role === 'admin') {
 // Pobierz rezerwacje oczekujące (tylko admin)
 $pending_reservations = [];
 if ($user_role === 'admin') {
-    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, r.imie, r.nazwisko, r.telefon, r.uwagi, u.username, u.email, c.name AS cabin_name
+    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, r.imie, r.nazwisko, r.telefon, r.uwagi, r.do_zaplaty, u.username, u.email, c.name AS cabin_name
         FROM reservations r
         LEFT JOIN users u ON r.user_id = u.id
         LEFT JOIN cabins c ON r.cabin_id = c.id
@@ -105,7 +105,7 @@ if ($user_role === 'admin') {
 // Pobierz rezerwacje użytkownika (tylko klient)
 $user_reservations = [];
 if ($user_role === 'client') {
-    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, c.name AS cabin_name, r.uwagi
+    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, c.name AS cabin_name, r.uwagi, r.do_zaplaty
         FROM reservations r
         LEFT JOIN cabins c ON r.cabin_id = c.id
         WHERE r.user_id = $user_id
@@ -120,7 +120,7 @@ if ($user_role === 'client') {
 // Pobierz wszystkie rezerwacje (tylko admin)
 $all_reservations = [];
 if ($user_role === 'admin') {
-    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, r.imie, r.nazwisko, r.telefon, r.uwagi, u.username, u.email, c.name AS cabin_name
+    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, r.imie, r.nazwisko, r.telefon, r.uwagi, r.do_zaplaty, u.username, u.email, c.name AS cabin_name
         FROM reservations r
         LEFT JOIN users u ON r.user_id = u.id
         LEFT JOIN cabins c ON r.cabin_id = c.id
@@ -225,7 +225,7 @@ if ($user_role === 'admin') {
         .panel-tab-content { display: none; }
         .panel-tab-content.active { display: block; }
     </style>
-    <script>
+    <script> // później przydałoby się przenieść do pliku JS
         document.addEventListener('DOMContentLoaded', function() {
             // Zakładki tylko dla klienta
             var tabBtns = document.querySelectorAll('.panel-tab-btn');
@@ -313,6 +313,7 @@ if ($user_role === 'admin') {
                             <th>Do</th>
                             <th>Status</th>
                             <th>Uwagi</th>
+                            <th>Do zapłaty</th>
                         </tr>
                         <?php foreach($user_reservations as $rez): ?>
                         <tr>
@@ -329,10 +330,11 @@ if ($user_role === 'admin') {
                                 ?>
                             </td>
                             <td><?= htmlspecialchars($rez['uwagi']) ?></td>
+                            <td><?= number_format((float)($rez['do_zaplaty'] ?? 0), 2, ',', ' ') ?> zł</td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($user_reservations)): ?>
-                        <tr><td colspan="6" style="text-align:center;">Brak rezerwacji.</td></tr>
+                        <tr><td colspan="7" style="text-align:center;">Brak rezerwacji.</td></tr>
                         <?php endif; ?>
                     </table>
                 </div>
@@ -358,6 +360,7 @@ if ($user_role === 'admin') {
                             <th>Telefon</th>
                             <th>Email</th>
                             <th>Uwagi</th>
+                            <th>Do zapłaty</th>
                             <th>Akcja</th>
                         </tr>
                         <?php foreach($pending_reservations as $rez): ?>
@@ -370,6 +373,7 @@ if ($user_role === 'admin') {
                             <td><?= htmlspecialchars($rez['telefon']) ?></td>
                             <td><?= htmlspecialchars($rez['email'] ?? '-') ?></td>
                             <td><?= htmlspecialchars($rez['uwagi']) ?></td>
+                            <td><?= number_format((float)($rez['do_zaplaty'] ?? 0), 2, ',', ' ') ?> zł</td>
                             <td>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="rezerwacja_id" value="<?= $rez['id'] ?>">
@@ -380,7 +384,7 @@ if ($user_role === 'admin') {
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($pending_reservations)): ?>
-                        <tr><td colspan="9" style="text-align:center;">Brak rezerwacji oczekujących na akceptację.</td></tr>
+                        <tr><td colspan="10" style="text-align:center;">Brak rezerwacji oczekujących na akceptację.</td></tr>
                         <?php endif; ?>
                     </table>
                 </div>
@@ -398,6 +402,7 @@ if ($user_role === 'admin') {
                             <th>Użytkownik</th>
                             <th>Status</th>
                             <th>Uwagi</th>
+                            <th>Do zapłaty</th>
                         </tr>
                         <?php foreach($all_reservations as $rez): ?>
                         <tr>
@@ -418,10 +423,11 @@ if ($user_role === 'admin') {
                                 ?>
                             </td>
                             <td><?= htmlspecialchars($rez['uwagi']) ?></td>
+                            <td><?= number_format((float)($rez['do_zaplaty'] ?? 0), 2, ',', ' ') ?> zł</td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($all_reservations)): ?>
-                        <tr><td colspan="10" style="text-align:center;">Brak rezerwacji.</td></tr>
+                        <tr><td colspan="11" style="text-align:center;">Brak rezerwacji.</td></tr>
                         <?php endif; ?>
                     </table>
                 </div>

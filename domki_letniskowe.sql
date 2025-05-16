@@ -74,7 +74,8 @@ CREATE TABLE `reservations` (
   `imie` varchar(100) DEFAULT NULL,
   `nazwisko` varchar(100) DEFAULT NULL,
   `telefon` varchar(40) DEFAULT NULL,
-  `uwagi` text DEFAULT NULL
+  `uwagi` text DEFAULT NULL,
+  `do_zaplaty` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
