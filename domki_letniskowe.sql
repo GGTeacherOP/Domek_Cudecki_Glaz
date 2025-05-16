@@ -70,7 +70,12 @@ CREATE TABLE `reservations` (
   `cabin_id` int(11) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `status` enum('pending','confirmed','cancelled') DEFAULT 'pending'
+  `status` enum('pending','confirmed','cancelled') DEFAULT 'pending',
+  `imie` varchar(100) DEFAULT NULL,
+  `nazwisko` varchar(100) DEFAULT NULL,
+  `telefon` varchar(40) DEFAULT NULL,
+  `uwagi` text DEFAULT NULL,
+  `do_zaplaty` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -173,7 +178,10 @@ ALTER TABLE `reservations`
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 (1, 'AnnaK', 'anna@example.com', 'haslo1', 'client'),
 (2, 'MarekW', 'marek@example.com', 'haslo2', 'client'),
-(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client');
+(3, 'KarolinaM', 'karolina@example.com', 'haslo3', 'client'),
+(4, 'AdminJan', 'jan.admin@example.com', 'bezpiecznehaslo1', 'admin'),
+(5, 'AdminEwa', 'ewa.admin@example.com', 'superadmin2', 'admin'),
+(6, 'AdminPiotr', 'piotr.admin@example.com', 'tajnehaslo3', 'admin');
 
 -- --------------------------------------------------------
 

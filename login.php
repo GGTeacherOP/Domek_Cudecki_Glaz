@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($password === $row['password']) {
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
-                // Dodanie roli użytkownika do sesji
-                $_SESSION['user_role'] = $row['rola'];
+                $_SESSION['user_name'] = $row['username']; // Dodaj nazwę użytkownika do sesji
+                $_SESSION['user_role'] = $row['role'];
                 header('Location: index.php');
                 exit;
             } else {
@@ -113,10 +113,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li><a href="galeria.php">Galeria</a></li>
                 <li><a href="kontakt.php">Kontakt</a></li>
                 <li><a href="opinie.php">Opinie</a></li>
+                <li><a href="atrakcje.php">Atrakcje</a></li>
                 <?php if(isset($_SESSION['user_id']) && isset($_SESSION['user_email'])): ?>
-                <li><a href="admin.php">Panel admin</a></li>
-                <?php endif; ?>
+                <li><a href="admin.php">Panel użytkownika</a></li>
+                <li class="login-btn" style="color:var(--primary-color); font-weight:bold; background:none;">
+                    Witaj, <?= htmlspecialchars($_SESSION['user_name']) ?>
+                </li>
+                <li class="login-btn"><a href="logout.php">Wyloguj</a></li>
+                <?php else: ?>
                 <li class="login-btn"><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </header>
@@ -137,6 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit" class="btn-login">Zaloguj się</button>
             </form>
+            <div style="text-align:center;margin-top:1rem;">
+                Nie masz konta? <a href="register.php">Zarejestruj się</a>
+            </div>
         </div>
     </main>
     <footer>
