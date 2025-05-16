@@ -14,6 +14,7 @@ $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'] ?? 'client';
 $change_pass_msg = '';
 $delete_opinia_msg = '';
+$rezerwacja_msg = '';
 
 // Obsługa zmiany hasła
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
@@ -50,6 +51,25 @@ if ($user_role === 'admin' && isset($_POST['delete_opinia_id'])) {
     }
 }
 
+// Obsługa akceptacji/odrzucenia rezerwacji (tylko admin)
+if ($user_role === 'admin' && isset($_POST['rezerwacja_id']) && isset($_POST['rezerwacja_action'])) {
+    $rez_id = (int)$_POST['rezerwacja_id'];
+    $action = $_POST['rezerwacja_action'];
+    if ($action === 'accept') {
+        if (mysqli_query($mysqli, "UPDATE reservations SET status='confirmed' WHERE id=$rez_id")) {
+            $rezerwacja_msg = 'Rezerwacja została zaakceptowana.';
+        } else {
+            $rezerwacja_msg = 'Błąd podczas akceptowania rezerwacji.';
+        }
+    } elseif ($action === 'reject') {
+        if (mysqli_query($mysqli, "UPDATE reservations SET status='cancelled' WHERE id=$rez_id")) {
+            $rezerwacja_msg = 'Rezerwacja została odrzucona.';
+        } else {
+            $rezerwacja_msg = 'Błąd podczas odrzucania rezerwacji.';
+        }
+    }
+}
+
 // Pobierz opinie do panelu admina
 $opinie = [];
 if ($user_role === 'admin') {
@@ -65,6 +85,22 @@ if ($user_role === 'admin') {
         }
     }
 }
+
+// Pobierz rezerwacje oczekujące (tylko admin)
+$pending_reservations = [];
+if ($user_role === 'admin') {
+    $q = mysqli_query($mysqli, "SELECT r.id, r.start_date, r.end_date, r.status, r.imie, r.nazwisko, r.telefon, r.uwagi, u.username, u.email, c.name AS cabin_name
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN cabins c ON r.cabin_id = c.id
+        WHERE r.status = 'pending'
+        ORDER BY r.start_date ASC");
+    if ($q) {
+        while ($row = mysqli_fetch_assoc($q)) {
+            $pending_reservations[] = $row;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -74,7 +110,19 @@ if ($user_role === 'admin') {
     <title>Panel użytkownika</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .panel-container { max-width: 700px; margin: 120px auto 0 auto; background: var(--light-bg); padding: 2rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+        body {
+            /* ...existing code... */
+        }
+        .panel-container {
+            max-width: none;
+            width: 100%;
+            margin: 120px 0 0 0;
+            background: var(--light-bg);
+            padding: 2rem 2vw;
+            border-radius: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
         .panel-container h2 { text-align:center; margin-bottom:2rem;}
         .form-group { margin-bottom: 1.5rem;}
         .form-group label { display:block; margin-bottom:0.5rem; font-weight:bold;}
@@ -82,11 +130,41 @@ if ($user_role === 'admin') {
         .btn-panel { background: var(--accent-color); color: white; border: none; padding: 1rem 2rem; font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: background 0.3s;}
         .btn-panel:hover { background: #38a169;}
         .panel-msg { text-align:center; margin-bottom:1rem;}
-        .opinie-admin-table { width:100%; border-collapse:collapse; margin-top:2rem;}
-        .opinie-admin-table th, .opinie-admin-table td { border:1px solid #ccc; padding:0.5rem;}
-        .opinie-admin-table th { background:#eee;}
+        .opinie-admin-table, .rezerwacje-admin-table {
+            width: 100%;
+            border-collapse:collapse;
+            margin-top:2rem;
+            background: transparent;
+        }
+        .opinie-admin-table th, .opinie-admin-table td,
+        .rezerwacje-admin-table th, .rezerwacje-admin-table td {
+            border:1px solid #ccc;
+            padding:0.5rem;
+            word-break: break-word;
+        }
+        .opinie-admin-table th, .rezerwacje-admin-table th { background:#eee;}
         .delete-btn { background:#e53e3e; color:#fff; border:none; padding:0.4rem 1rem; border-radius:4px; cursor:pointer;}
         .delete-btn:hover { background:#c53030;}
+        .accept-btn { background:#38a169; color:#fff; border:none; padding:0.4rem 1rem; border-radius:4px; cursor:pointer;}
+        .accept-btn:hover { background:#2f855a;}
+        .reject-btn { background:#e53e3e; color:#fff; border:none; padding:0.4rem 1rem; border-radius:4px; cursor:pointer;}
+        .reject-btn:hover { background:#c53030;}
+        @media (max-width: 900px) {
+            .panel-container {
+                padding: 1rem 0.5rem;
+            }
+            .opinie-admin-table, .rezerwacje-admin-table {
+                font-size: 0.95em;
+            }
+        }
+        @media (max-width: 600px) {
+            .panel-container {
+                padding: 0.5rem 0.2rem;
+            }
+            .opinie-admin-table, .rezerwacje-admin-table {
+                font-size: 0.85em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -130,6 +208,45 @@ if ($user_role === 'admin') {
                 <button type="submit" name="change_password" class="btn-panel">Zmień hasło</button>
             </form>
             <?php if ($user_role === 'admin'): ?>
+                <h3>Rezerwacje oczekujące na akceptację</h3>
+                <?php if ($rezerwacja_msg): ?>
+                    <div class="panel-msg" style="color:<?= strpos($rezerwacja_msg, 'zaakceptowana')!==false?'green':'red' ?>"><?= htmlspecialchars($rezerwacja_msg) ?></div>
+                <?php endif; ?>
+                <table class="rezerwacje-admin-table">
+                    <tr>
+                        <th>ID</th>
+                        <th>Domek</th>
+                        <th>Od</th>
+                        <th>Do</th>
+                        <th>Imię i nazwisko</th>
+                        <th>Telefon</th>
+                        <th>Email</th>
+                        <th>Uwagi</th>
+                        <th>Akcja</th>
+                    </tr>
+                    <?php foreach($pending_reservations as $rez): ?>
+                    <tr>
+                        <td><?= $rez['id'] ?></td>
+                        <td><?= htmlspecialchars($rez['cabin_name']) ?></td>
+                        <td><?= htmlspecialchars($rez['start_date']) ?></td>
+                        <td><?= htmlspecialchars($rez['end_date']) ?></td>
+                        <td><?= htmlspecialchars(trim($rez['imie'].' '.$rez['nazwisko'])) ?></td>
+                        <td><?= htmlspecialchars($rez['telefon']) ?></td>
+                        <td><?= htmlspecialchars($rez['email'] ?? '-') ?></td>
+                        <td><?= htmlspecialchars($rez['uwagi']) ?></td>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="rezerwacja_id" value="<?= $rez['id'] ?>">
+                                <button type="submit" name="rezerwacja_action" value="accept" class="accept-btn" onclick="return confirm('Zaakceptować tę rezerwację?')">Akceptuj</button>
+                                <button type="submit" name="rezerwacja_action" value="reject" class="reject-btn" onclick="return confirm('Odrzucić tę rezerwację?')">Odrzuć</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($pending_reservations)): ?>
+                    <tr><td colspan="9" style="text-align:center;">Brak rezerwacji oczekujących na akceptację.</td></tr>
+                    <?php endif; ?>
+                </table>
                 <h3>Usuń opinię użytkownika</h3>
                 <?php if ($delete_opinia_msg): ?>
                     <div class="panel-msg" style="color:<?= strpos($delete_opinia_msg, 'została usunięta')!==false?'green':'red' ?>"><?= htmlspecialchars($delete_opinia_msg) ?></div>
