@@ -497,8 +497,8 @@ ALTER TABLE `reservations`
 --
 -- Constraints for table `kontakt`
 --
-ALTER TABLE `kontakt`
-  ADD CONSTRAINT `kontakt_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+-- ALTER TABLE `kontakt`
+--   ADD CONSTRAINT `kontakt_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
