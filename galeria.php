@@ -217,8 +217,8 @@ main {
         <div id="domek1" class="galeria-content active">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Słoneczny"</h2>
             <div class="galeria-grid">
-                <div class="galeria-item" onclick="openLightbox('assets/domek1.jpg')">
-                    <img src="assets/domek1.jpg" alt="Domek Słoneczny - widok zewnętrzny" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/sloneczny/domek1.jpg')">
+                    <img src="assets/sloneczny/domek1.jpg" alt="Domek Słoneczny - widok zewnętrzny" class="galeria-img">
                     <div class="galeria-opis">
                         <h3>Front domku</h3>
                         <p>Drewniana elewacja wtopiona w las</p>
@@ -273,8 +273,8 @@ main {
         <div id="domek2" class="galeria-content">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Brzozowy"</h2>
             <div class="galeria-grid">
-                <div class="galeria-item" onclick="openLightbox('assets/domek2.jpg')">
-                    <img src="assets/domek2.jpg" alt="Domek Brzozowy- widok zewnetrzny" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/domek1.jpg')">
+                    <img src="assets/brzozowy/domek1.jpg" alt="Domek Brzozowy- widok zewnetrzny" class="galeria-img">
                     <div class="galeria-opis">
                         <h3>Domek Brzozowy</h3>
                         <p>Widok na front domku Brzozowego</p>
@@ -327,8 +327,8 @@ main {
         <div id="domek3" class="galeria-content">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Premium"</h2>
             <div class="galeria-grid">
-                <div class="galeria-item" onclick="openLightbox('assets/premium/1.jpg')">
-                    <img src="assets/premium/1.jpg" alt="Widok z tarasu" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/premium/domek1.jpg')">
+                    <img src="assets/premium/domek1.jpg" alt="Widok z tarasu" class="galeria-img">
                     <div class="galeria-opis">
                         <h3>Domek Premium</h3>
                         <p>Piękny domek pomiędzy drzewami</p>
@@ -367,7 +367,13 @@ main {
                     </div>
                 </div>
                 
-                <!-- Dodaj więcej zdjęć -->
+                <div class="galeria-item" onclick="openLightbox('assets/premium/6.jpg')">
+                    <img src="assets/premium/6.jpg" alt="Plan" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Plan domku</h3>
+                        <p>Plan domku premium</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

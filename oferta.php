@@ -76,7 +76,7 @@ session_start();
         
         <div class="domek-szczegoly" id="domek1">
             <h2>Domek Słoneczny</h2>
-            <img src="assets/domek1.jpg" alt="Domek Słoneczny">
+            <img src="assets/sloneczny/domek1.jpg" alt="Domek Słoneczny">
             <div class="domek-cechy">
                 <span class="cecha">2 sypialnie</span>
                 <span class="cecha">Taras</span>
@@ -95,7 +95,7 @@ session_start();
         
         <div class="domek-szczegoly" id="domek2">
             <h2>Domek Brzozowy</h2>
-            <img src="assets/domek2.jpg" alt="Domek Brzozowy">
+            <img src="assets/brzozowy/domek1.jpg" alt="Domek Brzozowy">
             <div class="domek-cechy">
                 <span class="cecha">1 sypialnia</span>
                 <span class="cecha">Salon z rozkładaną kanapą</span>
@@ -114,7 +114,7 @@ session_start();
         
         <div class="domek-szczegoly" id="domek3">
             <h2>Domek Premium</h2>
-            <img src="assets/premium/1.jpg" alt="Domek Premium">
+            <img src="assets/premium/domek1.jpg" alt="Domek Premium">
             <div class="domek-cechy">
                 <span class="cecha">3 sypialnie</span>
                 <span class="cecha">Jacuzzi</span>
