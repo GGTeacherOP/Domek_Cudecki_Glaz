@@ -87,7 +87,9 @@ session_start();
     <main style="padding-top: 100px;">
         <h1 style="text-align:center;">Kontakt</h1>
         <p style="text-align:center;">Skontaktuj się z nami - odpowiemy na wszystkie pytania!</p>
-        
+        <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+            <p style="text-align:center; color:green; font-weight:bold;">Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.</p>
+        <?php endif; ?>
         <div class="kontakt-container">
             <div class="kontakt-info">
                 <h2>Dane kontaktowe</h2>

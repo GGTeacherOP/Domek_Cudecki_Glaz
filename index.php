@@ -67,19 +67,19 @@ if ($conn) {
             <h2>Nasze Domki</h2>
             <div class="domki-container">
                 <div class="domek-karta">
-                    <img src="assets/domek1.jpg" alt="Domek Słoneczny">
+                    <img src="assets/sloneczny/domek1.jpg" alt="Domek Słoneczny">
                     <h3>Domek Słoneczny</h3>
                     <p>Przestronny domek z 2 sypialniami i tarasem</p>
                     <a href="oferta.php#domek1" class="btn-wiecej">Więcej</a>
                 </div>
                 <div class="domek-karta">
-                    <img src="assets/domek2.jpg" alt="Domek Fajny">
+                    <img src="assets/brzozowy/domek1.jpg" alt="Domek Brzozowy">
                     <h3>Domek Brzozowy</h3>
                     <p>Przytulny domek idealny dla rodziny</p>
                     <a href="oferta.php#domek2" class="btn-wiecej">Więcej</a>
                 </div>
                 <div class="domek-karta">
-                    <img src="assets/domek3.jpg" alt="Domek Premium">
+                    <img src="assets/premium/domek1.jpg" alt="Domek Premium">
                     <h3>Domek Premium</h3>
                     <p>Luksusowy domek z jacuzzi</p>
                     <a href="oferta.php#domek3" class="btn-wiecej">Więcej</a>
