@@ -327,11 +327,11 @@ main {
         <div id="domek3" class="galeria-content">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Premium"</h2>
             <div class="galeria-grid">
-                <div class="galeria-item" onclick="openLightbox('assets/domek3.jpg')">
-                    <img src="assets/domek3.jpg" alt="Widok z tarasu" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/premium/1.jpg')">
+                    <img src="assets/premium/1.jpg" alt="Widok z tarasu" class="galeria-img">
                     <div class="galeria-opis">
-                        <h3>Panorama górska</h3>
-                        <p>Widok na szczyty z tarasu</p>
+                        <h3>Domek Premium</h3>
+                        <p>Piękny domek pomiędzy drzewami</p>
                     </div>
                 </div>
                 

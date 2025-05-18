@@ -114,7 +114,7 @@ session_start();
         
         <div class="domek-szczegoly" id="domek3">
             <h2>Domek Premium</h2>
-            <img src="assets/domek3.jpg" alt="Domek Premium">
+            <img src="assets/premium/1.jpg" alt="Domek Premium">
             <div class="domek-cechy">
                 <span class="cecha">3 sypialnie</span>
                 <span class="cecha">Jacuzzi</span>

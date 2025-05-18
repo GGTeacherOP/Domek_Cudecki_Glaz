@@ -79,7 +79,7 @@ if ($conn) {
                     <a href="oferta.php#domek2" class="btn-wiecej">Więcej</a>
                 </div>
                 <div class="domek-karta">
-                    <img src="assets/domek3.jpg" alt="Domek Premium">
+                    <img src="assets/premium/1.jpg" alt="Domek Premium">
                     <h3>Domek Premium</h3>
                     <p>Luksusowy domek z jacuzzi</p>
                     <a href="oferta.php#domek3" class="btn-wiecej">Więcej</a>
