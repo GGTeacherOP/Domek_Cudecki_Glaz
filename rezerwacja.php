@@ -1,18 +1,19 @@
 <?php
 session_start();
 
+// Inicjalizacja zmiennych dla komunikatów
 $rezerwacja_success = '';
 $rezerwacja_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Połączenie z bazą
+    // Konfiguracja połączenia z bazą danych
     $host = 'localhost';
     $user = 'root';
     $pass = '';
     $db   = 'domki_letniskowe';
     $conn = mysqli_connect($host, $user, $pass, $db);
 
-    // Pobierz dane z formularza
+    // Pobieranie danych z formularza
     $domek = $_POST['domek'] ?? '';
     $data_przyjazdu = $_POST['data_przyjazdu'] ?? '';
     $data_wyjazdu = $_POST['data_wyjazdu'] ?? '';
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefon = trim($_POST['telefon'] ?? '');
     $uwagi = trim($_POST['uwagi'] ?? '');
 
-    // Prosta walidacja
+    // Walidacja podstawowych danych
     if (
         !$domek || !$data_przyjazdu || !$data_wyjazdu || !$imie || !$nazwisko || !$email || !$telefon
         || !filter_var($email, FILTER_VALIDATE_EMAIL)
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$conn) {
         $rezerwacja_error = 'Błąd połączenia z bazą danych.';
     } else {
-        // Pobierz id domku z tabeli cabins
+        // Mapowanie nazw domków na ich ID w bazie
         $domek_map = [
             'sloneczny' => 1,
             'brzozowy' => 2,
@@ -62,10 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $do_zaplaty = $dni > 0 ? $dni * $cenaDzien : 0;
 
+        // Sprawdzanie dostępności terminu
         if (!$cabin_id) {
             $rezerwacja_error = 'Wybrano nieprawidłowy domek.';
         } else {
-            // Sprawdź kolizję terminów
+            // Sprawdzenie kolizji terminów w bazie
             $start = mysqli_real_escape_string($conn, $data_przyjazdu);
             $end = mysqli_real_escape_string($conn, $data_wyjazdu);
             $check_sql = "SELECT 1 FROM reservations 

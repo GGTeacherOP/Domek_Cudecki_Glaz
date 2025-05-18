@@ -1,15 +1,21 @@
 <?php
+// Rozpoczęcie sesji
 session_start();
+
+// Sprawdzenie czy użytkownik jest zalogowany
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
+
+// Konfiguracja połączenia z bazą danych
 $host = 'localhost';
 $user = 'root';
 $pass = '';
 $db   = 'domki_letniskowe';
 $mysqli = mysqli_connect($host, $user, $pass, $db);
 
+// Pobranie danych użytkownika
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'] ?? 'client';
 $change_pass_msg = '';
@@ -21,16 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     $old = $_POST['old_password'] ?? '';
     $new = $_POST['new_password'] ?? '';
     $new2 = $_POST['new_password2'] ?? '';
+    
+    // Walidacja pól formularza
     if ($old === '' || $new === '' || $new2 === '') {
         $change_pass_msg = 'Wszystkie pola są wymagane.';
     } elseif ($new !== $new2) {
         $change_pass_msg = 'Nowe hasła nie są takie same.';
     } else {
+        // Sprawdzenie starego hasła
         $q = mysqli_query($mysqli, "SELECT password FROM users WHERE id=$user_id LIMIT 1");
         $row = $q ? mysqli_fetch_assoc($q) : null;
         if (!$row || $row['password'] !== $old) {
             $change_pass_msg = 'Stare hasło jest nieprawidłowe.';
         } else {
+            // Aktualizacja hasła
             $new_esc = mysqli_real_escape_string($mysqli, $new);
             if (mysqli_query($mysqli, "UPDATE users SET password='$new_esc' WHERE id=$user_id")) {
                 $change_pass_msg = 'Hasło zostało zmienione.';

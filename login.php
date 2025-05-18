@@ -1,36 +1,43 @@
 <?php
+// Rozpoczęcie sesji PHP
 session_start();
 
 // Obsługa formularza logowania
 $login_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Połączenie z bazą danych
+        // Konfiguracja połączenia z bazą danych
         $host = 'localhost';
         $db = 'domki_letniskowe';
         $user = 'root';
         $pass = '';
+        
+        // Nawiązanie połączenia z bazą
         $mysqli = mysqli_connect($host, $user, $pass, $db);
 
+        // Sprawdzenie czy połączenie się powiodło
         if (mysqli_connect_errno()) {
             throw new Exception('Błąd połączenia z bazą danych.');
         }
 
+        // Pobranie danych z formularza
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        // Sprawdzenie użytkownika (hasło jako zwykły tekst, nieszyfrowane)
+        // Weryfikacja danych logowania
         $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email='$email' LIMIT 1");
         
         if (!$result) {
             throw new Exception('Błąd zapytania do bazy danych.');
         }
         
+        // Sprawdzenie czy użytkownik istnieje i czy hasło jest poprawne
         if ($row = mysqli_fetch_assoc($result)) {
             if ($password === $row['password']) {
+                // Utworzenie sesji użytkownika
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];
-                $_SESSION['user_name'] = $row['username']; // Dodaj nazwę użytkownika do sesji
+                $_SESSION['user_name'] = $row['username'];
                 $_SESSION['user_role'] = $row['role'];
                 header('Location: index.php');
                 exit;
@@ -43,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $login_error = $e->getMessage();
     } finally {
+        // Zamknięcie połączenia z bazą
         if (isset($mysqli) && $mysqli) {
             mysqli_close($mysqli);
         }
@@ -105,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
+    <!-- Nagłówek strony z menu nawigacyjnym -->
     <header>
         <a href="index.php"><img src="assets/logo.png" alt="Logo Domki Letniskowe" class="logo"></a>
         <nav>
@@ -126,7 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </ul>
         </nav>
     </header>
+
+    <!-- Główna zawartość strony -->
     <main>
+        <!-- Kontener formularza logowania -->
         <div class="login-container">
             <h2>Logowanie</h2>
             <?php if ($login_error): ?>
@@ -148,6 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </main>
+
+    <!-- Stopka strony -->
     <footer>
         <div class="footer-content">
             <div class="kontakt">

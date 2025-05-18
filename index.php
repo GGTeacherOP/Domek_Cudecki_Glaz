@@ -1,14 +1,18 @@
 <?php
+// Rozpoczęcie sesji dla zalogowanych użytkowników
 session_start();
 
-// Pobierz 3 najnowsze opinie z bazy
+// Pobranie 3 najnowszych opinii z bazy danych
 $opinie = [];
+// Konfiguracja połączenia z bazą danych
 $host = 'localhost';
 $user = 'root';
 $pass = '';
 $db   = 'domki_letniskowe';
 $conn = mysqli_connect($host, $user, $pass, $db);
+
 if ($conn) {
+    // Zapytanie SQL pobierające 3 ostatnie opinie wraz z nazwami użytkowników
     $sql = "SELECT o.content, o.rating, u.username, o.created_at 
             FROM opinions o 
             JOIN users u ON o.user_id = u.id 
@@ -16,6 +20,7 @@ if ($conn) {
             LIMIT 3";
     $result = mysqli_query($conn, $sql);
     if ($result) {
+        // Zapisanie wyników do tablicy
         while ($row = mysqli_fetch_assoc($result)) {
             $opinie[] = $row;
         }
