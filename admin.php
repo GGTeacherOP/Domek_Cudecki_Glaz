@@ -131,6 +131,55 @@ if ($user_role === 'admin') {
         }
     }
 }
+
+// Pobierz domki (cabins)
+$cabins = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM cabins ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $cabins[] = $row;
+}
+
+// Pobierz wydatki domków (cabin_expenses)
+$cabin_expenses = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT ce.*, c.name AS cabin_name FROM cabin_expenses ce LEFT JOIN cabins c ON ce.cabin_id = c.id ORDER BY ce.expense_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $cabin_expenses[] = $row;
+}
+
+// Pobierz pracowników (employees)
+$employees = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM employees ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $employees[] = $row;
+}
+
+// Pobierz wynagrodzenia pracowników (employee_salaries)
+$employee_salaries = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT es.*, e.name AS employee_name FROM employee_salaries es LEFT JOIN employees e ON es.employee_id = e.id ORDER BY es.payment_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $employee_salaries[] = $row;
+}
+
+// Pobierz zgłoszenia serwisowe (maintenance_requests)
+$maintenance_requests = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT mr.*, c.name AS cabin_name FROM maintenance_requests mr LEFT JOIN cabins c ON mr.cabin_id = c.id ORDER BY mr.request_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $maintenance_requests[] = $row;
+}
+
+// Pobierz atrakcje (attractions)
+$attractions = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM attractions ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $attractions[] = $row;
+}
+
+// Pobierz kontakt (kontakt)
+$kontakt_msgs = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM kontakt ORDER BY id DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $kontakt_msgs[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -224,8 +273,10 @@ if ($user_role === 'admin') {
         }
         .panel-tab-content { display: none; }
         .panel-tab-content.active { display: block; }
+        .scroll-table { max-height: 400px; overflow-y: auto; display: block;}
+        .scroll-table table { width: 100%; }
     </style>
-    <script> // później przydałoby się przenieść do pliku JS
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Zakładki tylko dla klienta
             var tabBtns = document.querySelectorAll('.panel-tab-btn');
@@ -343,6 +394,13 @@ if ($user_role === 'admin') {
                     <button class="panel-tab-btn" data-tab="rezerwacje-admin">Rezerwacje oczekujące</button>
                     <button class="panel-tab-btn" data-tab="wszystkie-rezerwacje">Wszystkie rezerwacje</button>
                     <button class="panel-tab-btn" data-tab="opinie-admin">Opinie użytkowników</button>
+                    <button class="panel-tab-btn" data-tab="employees">Pracownicy</button>
+                    <button class="panel-tab-btn" data-tab="employee-salaries">Wynagrodzenia</button>
+                    <button class="panel-tab-btn" data-tab="cabins">Domki</button>
+                    <button class="panel-tab-btn" data-tab="cabin-expenses">Wydatki domków</button>
+                    <button class="panel-tab-btn" data-tab="maintenance">Zgłoszenia serwisowe</button>
+                    <button class="panel-tab-btn" data-tab="attractions">Atrakcje</button>
+                    <button class="panel-tab-btn" data-tab="kontakt">Kontakt</button>
                     <button class="panel-tab-btn" data-tab="haslo-admin">Zmiana hasła</button>
                 </div>
                 <div class="panel-tab-content" id="tab-rezerwacje-admin">
@@ -462,6 +520,210 @@ if ($user_role === 'admin') {
                         <?php endforeach; ?>
                     </table>
                 </div>
+
+                <!-- Pracownicy -->
+                <div class="panel-tab-content" id="tab-employees">
+                    <h3>Pracownicy</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Stanowisko</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                        </tr>
+                        <?php foreach($employees as $e): ?>
+                        <tr>
+                            <td><?= $e['id'] ?></td>
+                            <td><?= htmlspecialchars($e['name']) ?></td>
+                            <td><?= htmlspecialchars($e['position']) ?></td>
+                            <td><?= htmlspecialchars($e['email']) ?></td>
+                            <td><?= htmlspecialchars($e['phone']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($employees)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak pracowników.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Wynagrodzenia -->
+                <div class="panel-tab-content" id="tab-employee-salaries">
+                    <h3>Wynagrodzenia pracowników</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Pracownik</th>
+                            <th>Kwota</th>
+                            <th>Data wypłaty</th>
+                        </tr>
+                        <?php foreach($employee_salaries as $es): ?>
+                        <tr>
+                            <td><?= $es['id'] ?></td>
+                            <td><?= htmlspecialchars($es['employee_name']) ?></td>
+                            <td><?= number_format((float)$es['salary'], 2, ',', ' ') ?> zł</td>
+                            <td><?= htmlspecialchars($es['payment_date']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($employee_salaries)): ?>
+                        <tr><td colspan="4" style="text-align:center;">Brak wypłat.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Domki -->
+                <div class="panel-tab-content" id="tab-cabins">
+                    <h3>Domki</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nazwa</th>
+                            <th>Opis</th>
+                            <th>Cena za noc</th>
+                            <th>Obrazek</th>
+                        </tr>
+                        <?php foreach($cabins as $c): ?>
+                        <tr>
+                            <td><?= $c['id'] ?></td>
+                            <td><?= htmlspecialchars($c['name']) ?></td>
+                            <td><?= htmlspecialchars($c['description']) ?></td>
+                            <td><?= number_format((float)$c['price_per_night'], 2, ',', ' ') ?> zł</td>
+                            <td>
+                                <?php if ($c['image_url']): ?>
+                                    <img src="<?= htmlspecialchars($c['image_url']) ?>" alt="obrazek" style="max-width:80px;max-height:60px;">
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($cabins)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak domków.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Wydatki domków -->
+                <div class="panel-tab-content" id="tab-cabin-expenses">
+                    <h3>Wydatki domków</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Domek</th>
+                            <th>Opis</th>
+                            <th>Kwota</th>
+                            <th>Data wydatku</th>
+                        </tr>
+                        <?php foreach($cabin_expenses as $ce): ?>
+                        <tr>
+                            <td><?= $ce['id'] ?></td>
+                            <td><?= htmlspecialchars($ce['cabin_name']) ?></td>
+                            <td><?= htmlspecialchars($ce['description']) ?></td>
+                            <td><?= number_format((float)$ce['amount'], 2, ',', ' ') ?> zł</td>
+                            <td><?= htmlspecialchars($ce['expense_date']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($cabin_expenses)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak wydatków.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Zgłoszenia serwisowe -->
+                <div class="panel-tab-content" id="tab-maintenance">
+                    <h3>Zgłoszenia serwisowe</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Domek</th>
+                            <th>Opis</th>
+                            <th>Status</th>
+                            <th>Data zgłoszenia</th>
+                        </tr>
+                        <?php foreach($maintenance_requests as $mr): ?>
+                        <tr>
+                            <td><?= $mr['id'] ?></td>
+                            <td><?= htmlspecialchars($mr['cabin_name']) ?></td>
+                            <td><?= htmlspecialchars($mr['description']) ?></td>
+                            <td>
+                                <?php
+                                    if ($mr['status'] === 'pending') echo '<span style="color:#e6b800;">Oczekuje</span>';
+                                    elseif ($mr['status'] === 'in_progress') echo '<span style="color:#007bff;">W trakcie</span>';
+                                    elseif ($mr['status'] === 'completed') echo '<span style="color:green;">Zakończone</span>';
+                                    else echo htmlspecialchars($mr['status']);
+                                ?>
+                            </td>
+                            <td><?= htmlspecialchars($mr['request_date']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($maintenance_requests)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak zgłoszeń.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Atrakcje -->
+                <div class="panel-tab-content" id="tab-attractions">
+                    <h3>Atrakcje w okolicy</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nazwa</th>
+                            <th>Opis</th>
+                            <th>Odległość (km)</th>
+                        </tr>
+                        <?php foreach($attractions as $a): ?>
+                        <tr>
+                            <td><?= $a['id'] ?></td>
+                            <td><?= htmlspecialchars($a['name']) ?></td>
+                            <td><?= htmlspecialchars($a['description']) ?></td>
+                            <td><?= number_format((float)$a['distance_km'], 2, ',', ' ') ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($attractions)): ?>
+                        <tr><td colspan="4" style="text-align:center;">Brak atrakcji.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Kontakt -->
+                <div class="panel-tab-content" id="tab-kontakt">
+                    <h3>Wiadomości z formularza kontaktowego</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Email</th>
+                            <th>Temat</th>
+                            <th>Treść</th>
+                        </tr>
+                        <?php foreach($kontakt_msgs as $k): ?>
+                        <tr>
+                            <td><?= $k['id'] ?></td>
+                            <td><?= htmlspecialchars($k['imie_nazwisko']) ?></td>
+                            <td><?= htmlspecialchars($k['email']) ?></td>
+                            <td><?= htmlspecialchars($k['temat']) ?></td>
+                            <td><?= htmlspecialchars($k['tresc']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($kontakt_msgs)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak wiadomości.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
                 <div class="panel-tab-content" id="tab-haslo-admin">
                     <h3>Zmiana hasła</h3>
                     <?php if ($change_pass_msg): ?>
