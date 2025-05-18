@@ -21,6 +21,7 @@ session_start();
             margin-bottom: 2rem;
             color: #2c3e50;
             font-size: 2.5rem;
+            padding-top:20px;
         }
         
         /* Zakładki */
@@ -158,7 +159,7 @@ main {
 
 .background-layer {
     position: absolute;
-    top: 0;
+    top: 65px;
     left: 0;
     width: 100%;
     height: 100%;
@@ -201,7 +202,8 @@ main {
 
     <div class="background-layer"></div>
     
-    <main class="galerie-contain>
+    <main class="galerie-container">
+    <div class="content-wrapper">
         <h1 class="galerie-tytul">Galerie Naszych Domków</h1>
         
         <!-- Zakładki -->
@@ -272,26 +274,56 @@ main {
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Brzozowy"</h2>
             <div class="galeria-grid">
                 <div class="galeria-item" onclick="openLightbox('assets/domek2.jpg')">
-                    <img src="assets/domek2.jpg" alt="Domek nad jeziorem" class="galeria-img">
+                    <img src="assets/domek2.jpg" alt="Domek Brzozowy- widok zewnetrzny" class="galeria-img">
                     <div class="galeria-opis">
-                        <h3>Widok na jezioro</h3>
-                        <p>Taras z bezpośrednim dostępem do wody</p>
+                        <h3>Domek Brzozowy</h3>
+                        <p>Widok na front domku Brzozowego</p>
                     </div>
                 </div>
                 
-                <div class="galeria-item" onclick="openLightbox('img/jeziorny/2.jpg')">
-                    <img src="img/jeziorny/2.jpg" alt="Pomost" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/2.jpg')">
+                    <img src="assets/brzozowy/2.jpg" alt="Salon" class="galeria-img">
                     <div class="galeria-opis">
-                        <h3>Prywatny pomost</h3>
-                        <p>Miejsce na wieczorne podziwianie zachodów słońca</p>
+                        <h3>Piękny salon</h3>
+                        <p>Widok na salon z pierwszego piętra</p>
                     </div>
                 </div>
                 
-                <!-- Dodaj więcej zdjęć -->
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/3.jpg')">
+                    <img src="assets/brzozowy/3.jpg" alt="Sypialnia" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Sypialnia</h3>
+                        <p>Sypialnia z łózkiem małżeńskim i balkonem</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/4.jpg')">
+                    <img src="assets/brzozowy/4.jpg" alt="Łazienka" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Łazienka</h3>
+                        <p>Piękna łazienka z drewnianym wykończeniem</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/5.jpg')">
+                    <img src="assets/brzozowy/5.jpg" alt="Widok" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Widok</h3>
+                        <p>Widok z balkonu na pobliski las</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/brzozowy/6.jpg')">
+                    <img src="assets/brzozowy/6.jpg" alt="Plan" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Plan domku</h3>
+                        <p>Plan domku Brzozowego</p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <!-- Galeria Domku Górskiego -->
+       
         <div id="domek3" class="galeria-content">
             <h2 style="text-align:center; margin-bottom:1.5rem;">Domek "Premium"</h2>
             <div class="galeria-grid">
@@ -303,11 +335,35 @@ main {
                     </div>
                 </div>
                 
-                <div class="galeria-item" onclick="openLightbox('img/gorski/2.jpg')">
-                    <img src="img/gorski/2.jpg" alt="Kominek" class="galeria-img">
+                <div class="galeria-item" onclick="openLightbox('assets/premium/2.jpg')">
+                    <img src="assets/premium/2.jpg" alt="Kuchnia" class="galeria-img">
                     <div class="galeria-opis">
-                        <h3>Kamienny kominek</h3>
-                        <p>Centralny punkt salonu</p>
+                        <h3>Kuchnia</h3>
+                        <p>Nowoczesna kuchnia z pełnym wyposażeniem</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/premium/3.jpg')">
+                    <img src="assets/premium/3.jpg" alt="Sypialnia" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Sypialnia</h3>
+                        <p>Jedna z sypialni z łózkiem małżeńskim</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/premium/5.jpg')">
+                    <img src="assets/premium/5.jpg" alt="Łazienka" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Łazienka</h3>
+                        <p>Nowoczesna łazienka</p>
+                    </div>
+                </div>
+
+                <div class="galeria-item" onclick="openLightbox('assets/premium/4.jpg')">
+                    <img src="assets/premium/4.jpg" alt="Sauna" class="galeria-img">
+                    <div class="galeria-opis">
+                        <h3>Sauna</h3>
+                        <p>Sauna z niesamowitym widokiem na pobliskie jezioro</p>
                     </div>
                 </div>
                 
