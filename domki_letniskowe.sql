@@ -499,6 +499,58 @@ ALTER TABLE `reservations`
 --
 -- ALTER TABLE `kontakt`
 --   ADD CONSTRAINT `kontakt_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+-- Widok: Suma wydatków na każdy domek
+CREATE OR REPLACE VIEW view_cabin_expenses_summary AS
+SELECT
+  c.id AS cabin_id,
+  c.name AS cabin_name,
+  SUM(e.amount) AS total_expenses
+FROM cabins c
+LEFT JOIN cabin_expenses e ON c.id = e.cabin_id
+GROUP BY c.id, c.name;
+
+-- --------------------------------------------------------
+-- Widok: Ostatnia wypłata każdego pracownika
+CREATE OR REPLACE VIEW view_employee_latest_salary AS
+SELECT
+  e.id AS employee_id,
+  e.name AS employee_name,
+  s.salary,
+  s.payment_date
+FROM employees e
+JOIN (
+  SELECT employee_id, MAX(payment_date) AS max_date
+  FROM employee_salaries
+  GROUP BY employee_id
+) latest ON e.id = latest.employee_id
+JOIN employee_salaries s ON s.employee_id = latest.employee_id AND s.payment_date = latest.max_date;
+
+-- --------------------------------------------------------
+-- Widok: Oczekujące zgłoszenia serwisowe z nazwą domku
+CREATE OR REPLACE VIEW view_pending_maintenance_requests AS
+SELECT
+  mr.id AS request_id,
+  c.name AS cabin_name,
+  mr.description,
+  mr.status,
+  mr.request_date
+FROM maintenance_requests mr
+JOIN cabins c ON mr.cabin_id = c.id
+WHERE mr.status = 'pending';
+
+-- --------------------------------------------------------
+-- Widok: Atrakcje w promieniu 3 km od domków
+CREATE OR REPLACE VIEW view_attractions_nearby AS
+SELECT
+  id,
+  name,
+  description,
+  distance_km
+FROM attractions
+WHERE distance_km <= 3.00;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
