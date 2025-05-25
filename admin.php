@@ -1,15 +1,21 @@
 <?php
+// Rozpoczęcie sesji
 session_start();
+
+// Sprawdzenie czy użytkownik jest zalogowany
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
+
+// Konfiguracja połączenia z bazą danych
 $host = 'localhost';
 $user = 'root';
 $pass = '';
 $db   = 'domki_letniskowe';
 $mysqli = mysqli_connect($host, $user, $pass, $db);
 
+// Pobranie danych użytkownika
 $user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'] ?? 'client';
 $change_pass_msg = '';
@@ -21,16 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     $old = $_POST['old_password'] ?? '';
     $new = $_POST['new_password'] ?? '';
     $new2 = $_POST['new_password2'] ?? '';
+    
+    // Walidacja pól formularza
     if ($old === '' || $new === '' || $new2 === '') {
         $change_pass_msg = 'Wszystkie pola są wymagane.';
     } elseif ($new !== $new2) {
         $change_pass_msg = 'Nowe hasła nie są takie same.';
     } else {
+        // Sprawdzenie starego hasła
         $q = mysqli_query($mysqli, "SELECT password FROM users WHERE id=$user_id LIMIT 1");
         $row = $q ? mysqli_fetch_assoc($q) : null;
         if (!$row || $row['password'] !== $old) {
             $change_pass_msg = 'Stare hasło jest nieprawidłowe.';
         } else {
+            // Aktualizacja hasła
             $new_esc = mysqli_real_escape_string($mysqli, $new);
             if (mysqli_query($mysqli, "UPDATE users SET password='$new_esc' WHERE id=$user_id")) {
                 $change_pass_msg = 'Hasło zostało zmienione.';
@@ -131,6 +141,143 @@ if ($user_role === 'admin') {
         }
     }
 }
+
+// Pobierz domki (cabins)
+$cabins = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM cabins ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $cabins[] = $row;
+}
+
+// Pobierz wydatki domków (cabin_expenses)
+$cabin_expenses = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT ce.*, c.name AS cabin_name FROM cabin_expenses ce LEFT JOIN cabins c ON ce.cabin_id = c.id ORDER BY ce.expense_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $cabin_expenses[] = $row;
+}
+
+// Pobierz pracowników (employees)
+$employees = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM employees ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $employees[] = $row;
+}
+
+// Pobierz wynagrodzenia pracowników (employee_salaries)
+$employee_salaries = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT es.*, e.name AS employee_name FROM employee_salaries es LEFT JOIN employees e ON es.employee_id = e.id ORDER BY es.payment_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $employee_salaries[] = $row;
+}
+
+// Pobierz zgłoszenia serwisowe (maintenance_requests)
+$maintenance_requests = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT mr.*, c.name AS cabin_name FROM maintenance_requests mr LEFT JOIN cabins c ON mr.cabin_id = c.id ORDER BY mr.request_date DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $maintenance_requests[] = $row;
+}
+
+// Pobierz atrakcje (attractions)
+$attractions = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM attractions ORDER BY id ASC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $attractions[] = $row;
+}
+
+// Pobierz kontakt (kontakt)
+$kontakt_msgs = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT * FROM kontakt ORDER BY id DESC");
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $kontakt_msgs[] = $row;
+}
+
+// Obsługa edycji i zapisu dla każdej tabeli
+
+// Pracownicy
+$edit_employee_id = isset($_POST['edit_employee_id']) ? (int)$_POST['edit_employee_id'] : null;
+$save_employee_id = isset($_POST['save_employee_id']) ? (int)$_POST['save_employee_id'] : null;
+if ($save_employee_id) {
+    $name = mysqli_real_escape_string($mysqli, $_POST['name']);
+    $position = mysqli_real_escape_string($mysqli, $_POST['position']);
+    $email = mysqli_real_escape_string($mysqli, $_POST['email']);
+    $phone = mysqli_real_escape_string($mysqli, $_POST['phone']);
+    mysqli_query($mysqli, "UPDATE employees SET name='$name', position='$position', email='$email', phone='$phone' WHERE id=$save_employee_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Wynagrodzenia
+$edit_salary_id = isset($_POST['edit_salary_id']) ? (int)$_POST['edit_salary_id'] : null;
+$save_salary_id = isset($_POST['save_salary_id']) ? (int)$_POST['save_salary_id'] : null;
+if ($save_salary_id) {
+    $salary = (float)$_POST['salary'];
+    $payment_date = mysqli_real_escape_string($mysqli, $_POST['payment_date']);
+    mysqli_query($mysqli, "UPDATE employee_salaries SET salary='$salary', payment_date='$payment_date' WHERE id=$save_salary_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Domki
+$edit_cabin_id = isset($_POST['edit_cabin_id']) ? (int)$_POST['edit_cabin_id'] : null;
+$save_cabin_id = isset($_POST['save_cabin_id']) ? (int)$_POST['save_cabin_id'] : null;
+if ($save_cabin_id) {
+    $name = mysqli_real_escape_string($mysqli, $_POST['name']);
+    $description = mysqli_real_escape_string($mysqli, $_POST['description']);
+    $price_per_night = (float)$_POST['price_per_night'];
+    $image_url = mysqli_real_escape_string($mysqli, $_POST['image_url']);
+    mysqli_query($mysqli, "UPDATE cabins SET name='$name', description='$description', price_per_night='$price_per_night', image_url='$image_url' WHERE id=$save_cabin_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Wydatki domków
+$edit_expense_id = isset($_POST['edit_expense_id']) ? (int)$_POST['edit_expense_id'] : null;
+$save_expense_id = isset($_POST['save_expense_id']) ? (int)$_POST['save_expense_id'] : null;
+if ($save_expense_id) {
+    $description = mysqli_real_escape_string($mysqli, $_POST['description']);
+    $amount = (float)$_POST['amount'];
+    $expense_date = mysqli_real_escape_string($mysqli, $_POST['expense_date']);
+    mysqli_query($mysqli, "UPDATE cabin_expenses SET description='$description', amount='$amount', expense_date='$expense_date' WHERE id=$save_expense_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Zgłoszenia serwisowe
+$edit_maintenance_id = isset($_POST['edit_maintenance_id']) ? (int)$_POST['edit_maintenance_id'] : null;
+$save_maintenance_id = isset($_POST['save_maintenance_id']) ? (int)$_POST['save_maintenance_id'] : null;
+if ($save_maintenance_id) {
+    $description = mysqli_real_escape_string($mysqli, $_POST['description']);
+    $status = mysqli_real_escape_string($mysqli, $_POST['status']);
+    $request_date = mysqli_real_escape_string($mysqli, $_POST['request_date']);
+    mysqli_query($mysqli, "UPDATE maintenance_requests SET description='$description', status='$status', request_date='$request_date' WHERE id=$save_maintenance_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Atrakcje
+$edit_attraction_id = isset($_POST['edit_attraction_id']) ? (int)$_POST['edit_attraction_id'] : null;
+$save_attraction_id = isset($_POST['save_attraction_id']) ? (int)$_POST['save_attraction_id'] : null;
+if ($save_attraction_id) {
+    $name = mysqli_real_escape_string($mysqli, $_POST['name']);
+    $description = mysqli_real_escape_string($mysqli, $_POST['description']);
+    $distance_km = (float)$_POST['distance_km'];
+    mysqli_query($mysqli, "UPDATE attractions SET name='$name', description='$description', distance_km='$distance_km' WHERE id=$save_attraction_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+
+// Kontakt
+$edit_kontakt_id = isset($_POST['edit_kontakt_id']) ? (int)$_POST['edit_kontakt_id'] : null;
+$save_kontakt_id = isset($_POST['save_kontakt_id']) ? (int)$_POST['save_kontakt_id'] : null;
+if ($save_kontakt_id) {
+    $imie_nazwisko = mysqli_real_escape_string($mysqli, $_POST['imie_nazwisko']);
+    $email = mysqli_real_escape_string($mysqli, $_POST['email']);
+    $temat = mysqli_real_escape_string($mysqli, $_POST['temat']);
+    $tresc = mysqli_real_escape_string($mysqli, $_POST['tresc']);
+    mysqli_query($mysqli, "UPDATE kontakt SET imie_nazwisko='$imie_nazwisko', email='$email', temat='$temat', tresc='$tresc' WHERE id=$save_kontakt_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -224,8 +371,10 @@ if ($user_role === 'admin') {
         }
         .panel-tab-content { display: none; }
         .panel-tab-content.active { display: block; }
+        .scroll-table { max-height: 400px; overflow-y: auto; display: block;}
+        .scroll-table table { width: 100%; }
     </style>
-    <script> // później przydałoby się przenieść do pliku JS
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Zakładki tylko dla klienta
             var tabBtns = document.querySelectorAll('.panel-tab-btn');
@@ -343,6 +492,13 @@ if ($user_role === 'admin') {
                     <button class="panel-tab-btn" data-tab="rezerwacje-admin">Rezerwacje oczekujące</button>
                     <button class="panel-tab-btn" data-tab="wszystkie-rezerwacje">Wszystkie rezerwacje</button>
                     <button class="panel-tab-btn" data-tab="opinie-admin">Opinie użytkowników</button>
+                    <button class="panel-tab-btn" data-tab="employees">Pracownicy</button>
+                    <button class="panel-tab-btn" data-tab="employee-salaries">Wynagrodzenia</button>
+                    <button class="panel-tab-btn" data-tab="cabins">Domki</button>
+                    <button class="panel-tab-btn" data-tab="cabin-expenses">Wydatki domków</button>
+                    <button class="panel-tab-btn" data-tab="maintenance">Zgłoszenia serwisowe</button>
+                    <button class="panel-tab-btn" data-tab="attractions">Atrakcje</a></button>
+                    <button class="panel-tab-btn" data-tab="kontakt">Kontakt</button>
                     <button class="panel-tab-btn" data-tab="haslo-admin">Zmiana hasła</button>
                 </div>
                 <div class="panel-tab-content" id="tab-rezerwacje-admin">
@@ -462,6 +618,389 @@ if ($user_role === 'admin') {
                         <?php endforeach; ?>
                     </table>
                 </div>
+
+                <!-- Pracownicy -->
+                <div class="panel-tab-content" id="tab-employees">
+                    <h3>Pracownicy</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Stanowisko</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($employees as $e): ?>
+                        <tr>
+                            <?php if ($edit_employee_id === (int)$e['id']): ?>
+                                <form method="POST">
+                                    <td><?= $e['id'] ?><input type="hidden" name="save_employee_id" value="<?= $e['id'] ?>"></td>
+                                    <td><input type="text" name="name" value="<?= htmlspecialchars($e['name']) ?>" required></td>
+                                    <td><input type="text" name="position" value="<?= htmlspecialchars($e['position']) ?>" required></td>
+                                    <td><input type="email" name="email" value="<?= htmlspecialchars($e['email']) ?>"></td>
+                                    <td><input type="text" name="phone" value="<?= htmlspecialchars($e['phone']) ?>"></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $e['id'] ?></td>
+                                <td><?= htmlspecialchars($e['name']) ?></td>
+                                <td><?= htmlspecialchars($e['position']) ?></td>
+                                <td><?= htmlspecialchars($e['email']) ?></td>
+                                <td><?= htmlspecialchars($e['phone']) ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_employee_id" value="<?= $e['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć tego pracownika?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_employee_id" value="<?= $e['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($employees)): ?>
+                        <tr><td colspan="6" style="text-align:center;">Brak pracowników.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Wynagrodzenia -->
+                <div class="panel-tab-content" id="tab-employee-salaries">
+                    <h3>Wynagrodzenia pracowników</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Pracownik</th>
+                            <th>Kwota</th>
+                            <th>Data wypłaty</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($employee_salaries as $es): ?>
+                        <tr>
+                            <?php if ($edit_salary_id === (int)$es['id']): ?>
+                                <form method="POST">
+                                    <td><?= $es['id'] ?><input type="hidden" name="save_salary_id" value="<?= $es['id'] ?>"></td>
+                                    <td><?= htmlspecialchars($es['employee_name']) ?></td>
+                                    <td><input type="number" step="0.01" name="salary" value="<?= htmlspecialchars($es['salary']) ?>" required></td>
+                                    <td><input type="date" name="payment_date" value="<?= htmlspecialchars($es['payment_date']) ?>" required></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $es['id'] ?></td>
+                                <td><?= htmlspecialchars($es['employee_name']) ?></td>
+                                <td><?= number_format((float)$es['salary'], 2, ',', ' ') ?> zł</td>
+                                <td><?= htmlspecialchars($es['payment_date']) ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_salary_id" value="<?= $es['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć tę wypłatę?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_salary_id" value="<?= $es['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($employee_salaries)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak wypłat.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Domki -->
+                <div class="panel-tab-content" id="tab-cabins">
+                    <h3>Domki</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nazwa</th>
+                            <th>Opis</th>
+                            <th>Cena za noc</th>
+                            <th>Obrazek</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($cabins as $c): ?>
+                        <tr>
+                            <?php if ($edit_cabin_id === (int)$c['id']): ?>
+                                <form method="POST">
+                                    <td><?= $c['id'] ?><input type="hidden" name="save_cabin_id" value="<?= $c['id'] ?>"></td>
+                                    <td><input type="text" name="name" value="<?= htmlspecialchars($c['name']) ?>" required></td>
+                                    <td><input type="text" name="description" value="<?= htmlspecialchars($c['description']) ?>"></td>
+                                    <td><input type="number" step="0.01" name="price_per_night" value="<?= htmlspecialchars($c['price_per_night']) ?>" required></td>
+                                    <td><input type="text" name="image_url" value="<?= htmlspecialchars($c['image_url']) ?>"></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $c['id'] ?></td>
+                                <td><?= htmlspecialchars($c['name']) ?></td>
+                                <td><?= htmlspecialchars($c['description']) ?></td>
+                                <td><?= number_format((float)$c['price_per_night'], 2, ',', ' ') ?> zł</td>
+                                <td>
+                                    <?php if ($c['image_url']): ?>
+                                        <img src="<?= htmlspecialchars($c['image_url']) ?>" alt="obrazek" style="max-width:80px;max-height:60px;">
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_cabin_id" value="<?= $c['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć ten domek?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_cabin_id" value="<?= $c['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($cabins)): ?>
+                        <tr><td colspan="6" style="text-align:center;">Brak domków.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Wydatki domków -->
+                <div class="panel-tab-content" id="tab-cabin-expenses">
+                    <h3>Wydatki domków</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Domek</th>
+                            <th>Opis</th>
+                            <th>Kwota</th>
+                            <th>Data wydatku</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($cabin_expenses as $ce): ?>
+                        <tr>
+                            <?php if ($edit_expense_id === (int)$ce['id']): ?>
+                                <form method="POST">
+                                    <td><?= $ce['id'] ?><input type="hidden" name="save_expense_id" value="<?= $ce['id'] ?>"></td>
+                                    <td><?= htmlspecialchars($ce['cabin_name']) ?></td>
+                                    <td><input type="text" name="description" value="<?= htmlspecialchars($ce['description']) ?>"></td>
+                                    <td><input type="number" step="0.01" name="amount" value="<?= htmlspecialchars($ce['amount']) ?>" required></td>
+                                    <td><input type="date" name="expense_date" value="<?= htmlspecialchars($ce['expense_date']) ?>" required></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $ce['id'] ?></td>
+                                <td><?= htmlspecialchars($ce['cabin_name']) ?></td>
+                                <td><?= htmlspecialchars($ce['description']) ?></td>
+                                <td><?= number_format((float)$ce['amount'], 2, ',', ' ') ?> zł</td>
+                                <td><?= htmlspecialchars($ce['expense_date']) ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_expense_id" value="<?= $ce['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć ten wydatek?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_expense_id" value="<?= $ce['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($cabin_expenses)): ?>
+                        <tr><td colspan="6" style="text-align:center;">Brak wydatków.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Zgłoszenia serwisowe -->
+                <div class="panel-tab-content" id="tab-maintenance">
+                    <h3>Zgłoszenia serwisowe</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Domek</th>
+                            <th>Opis</th>
+                            <th>Status</th>
+                            <th>Data zgłoszenia</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($maintenance_requests as $mr): ?>
+                        <tr>
+                            <?php if ($edit_maintenance_id === (int)$mr['id']): ?>
+                                <form method="POST">
+                                    <td><?= $mr['id'] ?><input type="hidden" name="save_maintenance_id" value="<?= $mr['id'] ?>"></td>
+                                    <td><?= htmlspecialchars($mr['cabin_name']) ?></td>
+                                    <td><input type="text" name="description" value="<?= htmlspecialchars($mr['description']) ?>"></td>
+                                    <td>
+                                        <select name="status">
+                                            <option value="pending" <?= $mr['status']=='pending'?'selected':'' ?>>Oczekuje</option>
+                                            <option value="in_progress" <?= $mr['status']=='in_progress'?'selected':'' ?>>W trakcie</option>
+                                            <option value="completed" <?= $mr['status']=='completed'?'selected':'' ?>>Zakończone</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="date" name="request_date" value="<?= htmlspecialchars($mr['request_date']) ?>" required></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $mr['id'] ?></td>
+                                <td><?= htmlspecialchars($mr['cabin_name']) ?></td>
+                                <td><?= htmlspecialchars($mr['description']) ?></td>
+                                <td>
+                                    <?php
+                                        if ($mr['status'] === 'pending') echo '<span style="color:#e6b800;">Oczekuje</span>';
+                                        elseif ($mr['status'] === 'in_progress') echo '<span style="color:#007bff;">W trakcie</span>';
+                                        elseif ($mr['status'] === 'completed') echo '<span style="color:green;">Zakończone</span>';
+                                        else echo htmlspecialchars($mr['status']);
+                                    ?>
+                                </td>
+                                <td><?= htmlspecialchars($mr['request_date']) ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_maintenance_id" value="<?= $mr['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć to zgłoszenie?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_maintenance_id" value="<?= $mr['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($maintenance_requests)): ?>
+                        <tr><td colspan="6" style="text-align:center;">Brak zgłoszeń.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Atrakcje -->
+                <div class="panel-tab-content" id="tab-attractions">
+                    <h3>Atrakcje w okolicy</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nazwa</th>
+                            <th>Opis</th>
+                            <th>Odległość (km)</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($attractions as $a): ?>
+                        <tr>
+                            <?php if ($edit_attraction_id === (int)$a['id']): ?>
+                                <form method="POST">
+                                    <td><?= $a['id'] ?><input type="hidden" name="save_attraction_id" value="<?= $a['id'] ?>"></td>
+                                    <td><input type="text" name="name" value="<?= htmlspecialchars($a['name']) ?>" required></td>
+                                    <td><input type="text" name="description" value="<?= htmlspecialchars($a['description']) ?>"></td>
+                                    <td><input type="number" step="0.01" name="distance_km" value="<?= htmlspecialchars($a['distance_km']) ?>"></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $a['id'] ?></td>
+                                <td><?= htmlspecialchars($a['name']) ?></td>
+                                <td><?= htmlspecialchars($a['description']) ?></td>
+                                <td><?= number_format((float)$a['distance_km'], 2, ',', ' ') ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_attraction_id" value="<?= $a['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć tę atrakcję?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_attraction_id" value="<?= $a['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($attractions)): ?>
+                        <tr><td colspan="5" style="text-align:center;">Brak atrakcji.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Kontakt -->
+                <div class="panel-tab-content" id="tab-kontakt">
+                    <h3>Wiadomości z formularza kontaktowego</h3>
+                    <div class="scroll-table">
+                    <table class="rezerwacje-admin-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Email</th>
+                            <th>Temat</th>
+                            <th>Treść</th>
+                            <th>Opcje</th>
+                        </tr>
+                        <?php foreach($kontakt_msgs as $k): ?>
+                        <tr>
+                            <?php if ($edit_kontakt_id === (int)$k['id']): ?>
+                                <form method="POST">
+                                    <td><?= $k['id'] ?><input type="hidden" name="save_kontakt_id" value="<?= $k['id'] ?>"></td>
+                                    <td><input type="text" name="imie_nazwisko" value="<?= htmlspecialchars($k['imie_nazwisko']) ?>" required></td>
+                                    <td><input type="email" name="email" value="<?= htmlspecialchars($k['email']) ?>" required></td>
+                                    <td><input type="text" name="temat" value="<?= htmlspecialchars($k['temat']) ?>" required></td>
+                                    <td><input type="text" name="tresc" value="<?= htmlspecialchars($k['tresc']) ?>" required></td>
+                                    <td>
+                                        <button type="submit" class="accept-btn">Zapisz</button>
+                                        <a href="" class="delete-btn" style="text-decoration:none;" onclick="window.location.reload();return false;">Anuluj</a>
+                                    </td>
+                                </form>
+                            <?php else: ?>
+                                <td><?= $k['id'] ?></td>
+                                <td><?= htmlspecialchars($k['imie_nazwisko']) ?></td>
+                                <td><?= htmlspecialchars($k['email']) ?></td>
+                                <td><?= htmlspecialchars($k['temat']) ?></td>
+                                <td><?= htmlspecialchars($k['tresc']) ?></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="delete_kontakt_id" value="<?= $k['id'] ?>">
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Na pewno usunąć tę wiadomość?')">Usuń</button>
+                                    </form>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="edit_kontakt_id" value="<?= $k['id'] ?>">
+                                        <button type="submit" class="accept-btn">Edytuj</button>
+                                    </form>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($kontakt_msgs)): ?>
+                        <tr><td colspan="6" style="text-align:center;">Brak wiadomości.</td></tr>
+                        <?php endif; ?>
+                    </table>
+                    </div>
+                </div>
+
                 <div class="panel-tab-content" id="tab-haslo-admin">
                     <h3>Zmiana hasła</h3>
                     <?php if ($change_pass_msg): ?>

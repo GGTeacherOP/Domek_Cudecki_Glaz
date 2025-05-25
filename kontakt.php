@@ -1,4 +1,5 @@
 <?php
+// Rozpoczęcie sesji PHP
 session_start();
 ?>
 <!DOCTYPE html>
@@ -62,6 +63,7 @@ session_start();
     </style>
 </head>
 <body>
+    <!-- Nagłówek strony z menu nawigacyjnym -->
     <header>
         <a href="index.php"><img src="assets/logo.png" alt="Logo Domki Letniskowe" class="logo"></a>
         <nav>
@@ -84,13 +86,18 @@ session_start();
         </nav>
     </header>
 
+    <!-- Główna zawartość strony -->
     <main style="padding-top: 100px;">
         <h1 style="text-align:center;">Kontakt</h1>
         <p style="text-align:center;">Skontaktuj się z nami - odpowiemy na wszystkie pytania!</p>
+        <!-- Komunikat o pomyślnym wysłaniu wiadomości -->
         <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
             <p style="text-align:center; color:green; font-weight:bold;">Dziękujemy za wiadomość! Skontaktujemy się z Tobą wkrótce.</p>
         <?php endif; ?>
+
+        <!-- Kontener z informacjami kontaktowymi i formularzem -->
         <div class="kontakt-container">
+            <!-- Sekcja z danymi kontaktowymi -->
             <div class="kontakt-info">
                 <h2>Dane kontaktowe</h2>
                 <p><strong>Adres:</strong> ul. Jeziorna 1, 00-000 Miasto</p>
@@ -105,6 +112,7 @@ session_start();
                 <p>Nasz ośrodek jest położony 5 km od centrum miasta, nad malowniczym jeziorem. Dojazd jest dobrze oznakowany - wystarczy kierować się na Jezioro Piękne.</p>
             </div>
             
+            <!-- Formularz kontaktowy -->
             <div class="kontakt-form">
                 <h2>Formularz kontaktowy</h2>
                 <form action="wyslij_kontakt.php" method="POST">
@@ -133,11 +141,13 @@ session_start();
             </div>
         </div>
         
+        <!-- Mapa Google z lokalizacją -->
         <div class="map-container">
             <h2 style="text-align:center;">Nasza lokalizacja</h2>
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17162.823949174377!2d21.62748945384036!3d50.54392241866374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x473d49b794e76d9d%3A0x910582f0f2b03d1e!2sJezioro%20Tarnobrzeskie!5e1!3m2!1spl!2spl!4v1746788863267!5m2!1spl!2spl" width="1200" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>        </div>
     </main>
 
+    <!-- Stopka strony -->
     <footer>
         <div class="footer-content">
             <div class="kontakt">

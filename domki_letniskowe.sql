@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- wersja 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 18, 2025 at 07:08 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Czas generowania: 18 Maj 2025, 19:08
+-- Wersja serwera: 10.4.32-MariaDB
+-- Wersja PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `domki_letniskowe`
+-- Baza danych: `domki_letniskowe`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cabins`
+-- Struktura tabeli `cabins`
 --
 
 CREATE TABLE `cabins` (
@@ -36,7 +36,7 @@ CREATE TABLE `cabins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `cabins`
+-- Zrzut danych tabeli `cabins`
 --
 
 INSERT INTO `cabins` (`id`, `name`, `description`, `price_per_night`, `image_url`) VALUES
@@ -46,7 +46,7 @@ INSERT INTO `cabins` (`id`, `name`, `description`, `price_per_night`, `image_url
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cabin_expenses`
+-- Struktura tabeli `cabin_expenses`
 --
 
 CREATE TABLE `cabin_expenses` (
@@ -58,7 +58,7 @@ CREATE TABLE `cabin_expenses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cabin_expenses`
+-- Zrzut danych tabeli `cabin_expenses`
 --
 
 INSERT INTO `cabin_expenses` (`id`, `cabin_id`, `description`, `amount`, `expense_date`) VALUES
@@ -85,7 +85,7 @@ INSERT INTO `cabin_expenses` (`id`, `cabin_id`, `description`, `amount`, `expens
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employees`
+-- Struktura tabeli `employees`
 --
 
 CREATE TABLE `employees` (
@@ -97,7 +97,7 @@ CREATE TABLE `employees` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `employees`
+-- Zrzut danych tabeli `employees`
 --
 
 INSERT INTO `employees` (`id`, `name`, `position`, `email`, `phone`) VALUES
@@ -115,7 +115,7 @@ INSERT INTO `employees` (`id`, `name`, `position`, `email`, `phone`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employee_salaries`
+-- Struktura tabeli `employee_salaries`
 --
 
 CREATE TABLE `employee_salaries` (
@@ -126,7 +126,7 @@ CREATE TABLE `employee_salaries` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `employee_salaries`
+-- Zrzut danych tabeli `employee_salaries`
 --
 
 INSERT INTO `employee_salaries` (`id`, `employee_id`, `salary`, `payment_date`) VALUES
@@ -154,7 +154,7 @@ INSERT INTO `employee_salaries` (`id`, `employee_id`, `salary`, `payment_date`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `maintenance_requests`
+-- Struktura tabeli `maintenance_requests`
 --
 
 CREATE TABLE `maintenance_requests` (
@@ -166,7 +166,7 @@ CREATE TABLE `maintenance_requests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `maintenance_requests`
+-- Zrzut danych tabeli `maintenance_requests`
 --
 
 INSERT INTO `maintenance_requests` (`id`, `cabin_id`, `description`, `status`, `request_date`) VALUES
@@ -194,7 +194,7 @@ INSERT INTO `maintenance_requests` (`id`, `cabin_id`, `description`, `status`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `opinions`
+-- Struktura tabeli `opinions`
 --
 
 CREATE TABLE `opinions` (
@@ -206,7 +206,7 @@ CREATE TABLE `opinions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `opinions`
+-- Zrzut danych tabeli `opinions`
 --
 
 INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`, `created_at`) VALUES
@@ -224,7 +224,7 @@ INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`, `created_at`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reservations`
+-- Struktura tabeli `reservations`
 --
 
 CREATE TABLE `reservations` (
@@ -244,7 +244,7 @@ CREATE TABLE `reservations` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktura tabeli `users`
 --
 
 CREATE TABLE `users` (
@@ -256,7 +256,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
+-- Zrzut danych tabeli `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
@@ -281,7 +281,7 @@ CREATE TABLE `kontakt` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `kontakt`
+-- Zrzut danych tabeli `kontakt`
 --
 
 INSERT INTO `kontakt` (`id`, `imie_nazwisko`, `email`, `temat`, `tresc`) VALUES
@@ -308,7 +308,7 @@ CREATE TABLE `attractions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `attractions`
+-- Zrzut danych tabeli `attractions`
 --
 
 INSERT INTO `attractions` (`id`, `name`, `description`, `distance_km`) VALUES
@@ -324,51 +324,51 @@ INSERT INTO `attractions` (`id`, `name`, `description`, `distance_km`) VALUES
 (10, 'Spływ Rzeką Nurt', '3-godzinna trasa kajakowa przez malownicze zakola rzeki. Wypożyczalnia zapewnia suchy bagaż i transport z powrotem. Dla rodzin dostępne stabilne kanadyjki.', 2.30);
 
 --
--- Indexes for dumped tables
+-- Indeksy dla zrzutów tabel
 --
 
 --
--- Indexes for table `cabins`
+-- Indeksy dla tabeli `cabins`
 --
 ALTER TABLE `cabins`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `cabin_expenses`
+-- Indeksy dla tabeli `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indexes for table `employees`
+-- Indeksy dla tabeli `employees`
 --
 ALTER TABLE `employees`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `employee_salaries`
+-- Indeksy dla tabeli `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
   ADD PRIMARY KEY (`id`),
   ADD KEY `employee_id` (`employee_id`);
 
 --
--- Indexes for table `maintenance_requests`
+-- Indeksy dla tabeli `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indexes for table `opinions`
+-- Indeksy dla tabeli `opinions`
 --
 ALTER TABLE `opinions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `reservations`
+-- Indeksy dla tabeli `reservations`
 --
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
@@ -376,7 +376,7 @@ ALTER TABLE `reservations`
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indexes for table `users`
+-- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -384,118 +384,118 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `kontakt`
+-- Indeksy dla tabeli `kontakt`
 --
 ALTER TABLE `kontakt`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `attractions`
+-- Indeksy dla tabeli `attractions`
 --
 ALTER TABLE `attractions`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT dla zrzuconych tabel
 --
 
 --
--- AUTO_INCREMENT for table `cabins`
+-- AUTO_INCREMENT dla tabeli `cabins`
 --
 ALTER TABLE `cabins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `cabin_expenses`
+-- AUTO_INCREMENT dla tabeli `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `employees`
+-- AUTO_INCREMENT dla tabeli `employees`
 --
 ALTER TABLE `employees`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `employee_salaries`
+-- AUTO_INCREMENT dla tabeli `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `maintenance_requests`
+-- AUTO_INCREMENT dla tabeli `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `opinions`
+-- AUTO_INCREMENT dla tabeli `opinions`
 --
 ALTER TABLE `opinions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `reservations`
+-- AUTO_INCREMENT dla tabeli `reservations`
 --
 ALTER TABLE `reservations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `kontakt`
+-- AUTO_INCREMENT dla tabeli `kontakt`
 --
 ALTER TABLE `kontakt`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `attractions`
+-- AUTO_INCREMENT dla tabeli `attractions`
 --
 ALTER TABLE `attractions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
+-- Ograniczenia dla zrzutów tabel
 --
 
 --
--- Constraints for table `cabin_expenses`
+-- Ograniczenia dla tabeli `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
   ADD CONSTRAINT `cabin_expenses_ibfk_1` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `employee_salaries`
+-- Ograniczenia dla tabeli `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
   ADD CONSTRAINT `employee_salaries_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `maintenance_requests`
+-- Ograniczenia dla tabeli `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
   ADD CONSTRAINT `maintenance_requests_ibfk_1` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `opinions`
+-- Ograniczenia dla tabeli `opinions`
 --
 ALTER TABLE `opinions`
   ADD CONSTRAINT `opinions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reservations`
+-- Ograniczenia dla tabeli `reservations`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `kontakt`
+-- Ograniczenia dla tabeli `kontakt`
 --
 -- ALTER TABLE `kontakt`
 --   ADD CONSTRAINT `kontakt_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;

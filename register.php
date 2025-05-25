@@ -1,14 +1,20 @@
 <?php
+// Rozpoczęcie sesji PHP
 session_start();
 
+// Inicjalizacja zmiennych dla komunikatów
 $register_error = '';
 $register_success = '';
+
+// Obsługa formularza rejestracji
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Pobranie i oczyszczenie danych z formularza
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $password2 = $_POST['password2'] ?? '';
 
+    // Walidacja danych formularza
     if ($username === '' || $email === '' || $password === '' || $password2 === '') {
         $register_error = 'Wszystkie pola są wymagane.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -16,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $password2) {
         $register_error = 'Hasła nie są takie same.';
     } else {
+        // Konfiguracja połączenia z bazą danych
         $host = 'localhost';
         $db = 'domki_letniskowe';
         $user = 'root';
@@ -25,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$mysqli) {
             $register_error = 'Błąd połączenia z bazą danych.';
         } else {
+            // Zabezpieczenie danych przed SQL Injection
             $username_esc = mysqli_real_escape_string($mysqli, $username);
             $email_esc = mysqli_real_escape_string($mysqli, $email);
             $password_esc = mysqli_real_escape_string($mysqli, $password); // UWAGA: hasła nie są szyfrowane

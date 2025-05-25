@@ -1,14 +1,18 @@
 <?php
+// Rozpoczęcie sesji
 session_start();
-// Połączenie z bazą danych (mysqli)
+
+// Konfiguracja połączenia z bazą danych
 $host = 'localhost';
 $user = 'root';
 $pass = '';
 $db   = 'domki_letniskowe';
 
+// Nawiązanie połączenia i pobranie opinii
 $conn = mysqli_connect($host, $user, $pass, $db);
 $opinie = [];
 if ($conn) {
+    // Pobranie opinii wraz z danymi użytkowników
     $sql = "SELECT o.content, o.rating, u.username, u.email, o.id, o.created_at 
             FROM opinions o 
             JOIN users u ON o.user_id = u.id 
