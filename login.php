@@ -24,8 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        // Weryfikacja danych logowania
-        $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email='$email' LIMIT 1");
+        // Weryfikacja danych logowania - escape input to prevent SQL injection
+        $email_escaped = mysqli_real_escape_string($mysqli, $email);
+        $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email='$email_escaped' LIMIT 1");
         
         if (!$result) {
             throw new Exception('Błąd zapytania do bazy danych.');
@@ -33,7 +34,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Sprawdzenie czy użytkownik istnieje i czy hasło jest poprawne
         if ($row = mysqli_fetch_assoc($result)) {
+            // Sprawdzenie hasła
+            // Używamy zmiennej do przechowywania stanu poprawności hasła
+            $password_valid = false;
+            
+            // Dla hasła w plaintexcie (obecnie)
             if ($password === $row['password']) {
+                $password_valid = true;
+            }
+            // W przypadku hasła w formie haszowanej (w przyszłości)
+            elseif (password_verify($password, $row['password'])) {
+                $password_valid = true;
+            }
+            
+            if ($password_valid) {
                 // Utworzenie sesji użytkownika
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_email'] = $row['email'];

@@ -252,7 +252,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','client') DEFAULT 'client'
+  `role` enum('admin','client','konserwator','ksiegowy') DEFAULT 'client'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -266,7 +266,8 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 (4, 'AdminJan', 'jan.admin@example.com', 'bezpiecznehaslo1', 'admin'),
 (5, 'AdminEwa', 'ewa.admin@example.com', 'superadmin2', 'admin'),
 (6, 'AdminPiotr', 'piotr.admin@example.com', 'tajnehaslo3', 'admin'),
-(7, 'bobek1', 'bobek1@gmail.com', 'bobek123', 'client');
+(7, 'bobek1', 'bobek1@gmail.com', 'bobek123', 'client'),
+(8, 'KonserwatorTomek', 'tomek.konserwator@example.com', 'konserwator123', 'konserwator');
 
 -- --------------------------------------------------------
 
