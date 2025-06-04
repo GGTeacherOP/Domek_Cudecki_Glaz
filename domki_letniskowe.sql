@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- wersja 5.2.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 18 Maj 2025, 19:08
--- Wersja serwera: 10.4.32-MariaDB
--- Wersja PHP: 8.2.12
+-- Generation Time: Jun 04, 2025 at 09:38 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,42 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Baza danych: `domki_letniskowe`
+-- Database: `domki_letniskowe`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `cabins`
+-- Table structure for table `attractions`
+--
+
+CREATE TABLE `attractions` (
+  `id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `description` text NOT NULL,
+  `distance_km` decimal(5,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `attractions`
+--
+
+INSERT INTO `attractions` (`id`, `name`, `description`, `distance_km`) VALUES
+(1, 'Jezioro Łabędzia', 'Malownicze jezioro oddalone o 2 km od domku. Idealne miejsce na kąpiele, wędkowanie i kajaki. W sezonie działa wypożyczalnia sprzętu wodnego.', 2.00),
+(2, 'Puszcza Zielona', 'Rozległy kompleks leśny z trasami rowerowymi i szlakami pieszymi. Można spotkać dzikie zwierzęta i zbierać grzyby (w sezonie).', 1.80),
+(3, 'Zamek Krzyżacki', 'Historyczny zamek z XIV wieku, oddalony o 15 km. Organizowane są nocne zwiedzania z przewodnikiem w kostiumach.', 15.00),
+(4, 'Strefa Spa & Wellness', 'Luksusowe SPA oferujące masaże, baseny termalne i sauny. Znajduje się w odległości 10 km od domku.', 10.00),
+(5, 'Muzeum Regionalne', 'Interaktywne muzeum prezentujące historię regionu. Działa tu także kawiarnia z domowymi ciastami.', 3.20),
+(6, 'Trasy rowerowe', 'Sieć oznakowanych tras rowerowych o różnym poziomie trudności. Można wypożyczyć rowery w pobliskiej wypożyczalni.', 0.50),
+(7, 'Park Linowy \"Leśna Przygoda\"', 'Adrenalina dla całej rodziny! Trasy o różnym poziomie trudności, zjazdy tyrolskie i mosty linowe zawieszone w koronach drzew. Dla dzieci specjalna strefa z opiekunem.', 2.70),
+(8, 'Punkt Widokowy \"Góra Panorama\"', 'Najpiękniejsza panorama w regionie! Łatwa ścieżka (1.5 km) prowadzi na szczyt, skąd widać jezioro, lasy i okoliczne wioski. Idealne miejsce na zachód słońca.', 1.50),
+(9, 'Skansen \"Dawna Wieś\"', 'Żywe muzeum tradycji! Zobacz XVIII-wieczne chaty, warsztaty rzemieślnicze i pokazy wypieku chleba. W weekendy organizowane są warsztaty dla dzieci.', 4.40),
+(10, 'Spływ Rzeką Nurt', '3-godzinna trasa kajakowa przez malownicze zakola rzeki. Wypożyczalnia zapewnia suchy bagaż i transport z powrotem. Dla rodzin dostępne stabilne kanadyjki.', 2.30);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cabins`
 --
 
 CREATE TABLE `cabins` (
@@ -36,17 +65,18 @@ CREATE TABLE `cabins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `cabins`
+-- Dumping data for table `cabins`
 --
 
 INSERT INTO `cabins` (`id`, `name`, `description`, `price_per_night`, `image_url`) VALUES
 (1, 'Domek Słoneczny', 'Przestronny domek z dwiema sypialniami, idealny dla rodziny lub grupy przyjaciół.', 350.00, 'assets/img/domek1.jpg'),
 (2, 'Domek Brzozowy', 'Przytulny domek idealny dla pary lub małej rodziny.', 280.00, 'assets/img/domek2.jpg'),
 (3, 'Domek Premium', 'Luksusowy domek dla najbardziej wymagających gości.', 550.00, 'assets/img/domek3.jpg');
+
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `cabin_expenses`
+-- Table structure for table `cabin_expenses`
 --
 
 CREATE TABLE `cabin_expenses` (
@@ -58,7 +88,7 @@ CREATE TABLE `cabin_expenses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Zrzut danych tabeli `cabin_expenses`
+-- Dumping data for table `cabin_expenses`
 --
 
 INSERT INTO `cabin_expenses` (`id`, `cabin_id`, `description`, `amount`, `expense_date`) VALUES
@@ -85,7 +115,7 @@ INSERT INTO `cabin_expenses` (`id`, `cabin_id`, `description`, `amount`, `expens
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `employees`
+-- Table structure for table `employees`
 --
 
 CREATE TABLE `employees` (
@@ -97,7 +127,7 @@ CREATE TABLE `employees` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Zrzut danych tabeli `employees`
+-- Dumping data for table `employees`
 --
 
 INSERT INTO `employees` (`id`, `name`, `position`, `email`, `phone`) VALUES
@@ -115,7 +145,7 @@ INSERT INTO `employees` (`id`, `name`, `position`, `email`, `phone`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `employee_salaries`
+-- Table structure for table `employee_salaries`
 --
 
 CREATE TABLE `employee_salaries` (
@@ -126,7 +156,7 @@ CREATE TABLE `employee_salaries` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Zrzut danych tabeli `employee_salaries`
+-- Dumping data for table `employee_salaries`
 --
 
 INSERT INTO `employee_salaries` (`id`, `employee_id`, `salary`, `payment_date`) VALUES
@@ -154,7 +184,37 @@ INSERT INTO `employee_salaries` (`id`, `employee_id`, `salary`, `payment_date`) 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `maintenance_requests`
+-- Table structure for table `kontakt`
+--
+
+CREATE TABLE `kontakt` (
+  `id` int(11) NOT NULL,
+  `imie_nazwisko` varchar(150) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `temat` varchar(200) NOT NULL,
+  `tresc` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kontakt`
+--
+
+INSERT INTO `kontakt` (`id`, `imie_nazwisko`, `email`, `temat`, `tresc`) VALUES
+(1, 'Jan Nowak', 'jan.nowak@gmail.com', 'Rezerwacja domku', 'Chciałbym zarezerwować domek na weekend.'),
+(2, 'Anna Kowalska', 'anna.kowalska@gmail.com', 'Pytanie o wyposażenie', 'Czy w domku jest pralka?'),
+(3, 'Piotr Zieliński', 'piotr.zielinski@gmail.com', 'Dostępność terminu', 'Czy domek jest wolny w lipcu?'),
+(4, 'Ewa Wiśniewska', 'ewa.wisniewska@gmail.com', 'Zwierzęta', 'Czy można przyjechać z psem?'),
+(5, 'Kamil Mazur', 'kamil.mazur@gmail.com', 'Dodatkowe łóżko', 'Czy można dostać dostawkę dla dziecka?'),
+(6, 'Karolina Dąbrowska', 'karolina.dabrowska@gmail.com', 'Parking', 'Czy jest miejsce parkingowe?'),
+(7, 'Marek Lewandowski', 'marek.lewandowski@gmail.com', 'Grill', 'Czy jest możliwość grillowania?'),
+(8, 'Magdalena Kaczmarek', 'magda.kaczmarek@gmail.com', 'Internet', 'Czy jest dostęp do Wi-Fi?'),
+(9, 'Tomasz Szymański', 'tomasz.szymanski@gmail.com', 'Rowery', 'Czy można wypożyczyć rowery?'),
+(10, 'Paulina Wójcik', 'paulina.wojcik@gmail.com', 'Doba hotelowa', 'Od której godziny można się zameldować?');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `maintenance_requests`
 --
 
 CREATE TABLE `maintenance_requests` (
@@ -166,7 +226,7 @@ CREATE TABLE `maintenance_requests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Zrzut danych tabeli `maintenance_requests`
+-- Dumping data for table `maintenance_requests`
 --
 
 INSERT INTO `maintenance_requests` (`id`, `cabin_id`, `description`, `status`, `request_date`) VALUES
@@ -194,7 +254,7 @@ INSERT INTO `maintenance_requests` (`id`, `cabin_id`, `description`, `status`, `
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `opinions`
+-- Table structure for table `opinions`
 --
 
 CREATE TABLE `opinions` (
@@ -202,29 +262,27 @@ CREATE TABLE `opinions` (
   `user_id` int(11) NOT NULL,
   `content` text NOT NULL,
   `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `approved` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `opinions`
+-- Dumping data for table `opinions`
 --
 
-INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`, `created_at`) VALUES
-(1, 1, 'Wspaniałe miejsce na rodzinny wypoczynek!', 5, '2024-05-01 12:00:00'),
-(2, 2, 'Przepiękna okolica i świetnie wyposażone domki.', 4, '2024-05-03 15:30:00'),
-(3, 3, 'Na pewno tu wrócimy!', 5, '2024-05-05 09:45:00'),
-(4, 1, 'Domek bardzo czysty i zadbany, polecam!', 5, '2024-05-10 10:00:00'),
-(5, 2, 'Bardzo miła obsługa, domek spełnił nasze oczekiwania.', 4, '2024-05-12 14:30:00'),
-(6, 3, 'Cisza i spokój, idealne miejsce na relaks.', 5, '2024-05-15 16:45:00'),
-(7, 1, 'Domek dobrze wyposażony, blisko do atrakcji.', 4, '2024-05-18 11:15:00'),
-(8, 2, 'Wspaniałe widoki z okna, polecam na romantyczny wypad.', 5, '2024-05-20 09:00:00'),
-(9, 3, 'Domek z duszą, na pewno tu wrócimy.', 5, '2024-05-22 13:30:00'),
-(10, 1, 'Nie ma to jak poranna kawa na tarasie z widokiem na góry.', 5, '2024-05-25 08:00:00');
+INSERT INTO `opinions` (`id`, `user_id`, `content`, `rating`, `created_at`, `approved`) VALUES
+(1, 1, 'Wspaniałe miejsce na rodzinny wypoczynek!', 5, '2024-05-01 12:00:00', 1),
+(3, 3, 'Na pewno tu wrócimy!', 5, '2024-05-05 09:45:00', 1),
+(4, 1, 'Domek bardzo czysty i zadbany, polecam!', 5, '2024-05-10 10:00:00', 1),
+(8, 2, 'Wspaniałe widoki z okna, polecam na romantyczny wypad.', 5, '2024-05-20 09:00:00', 1),
+(9, 3, 'Domek z duszą, na pewno tu wrócimy.', 5, '2024-05-22 13:30:00', 1),
+(10, 1, 'Nie ma to jak poranna kawa na tarasie z widokiem na góry.', 5, '2024-05-25 08:00:00', 1),
+(11, 5, 'sztos', 4, '2025-06-04 21:23:32', 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `reservations`
+-- Table structure for table `reservations`
 --
 
 CREATE TABLE `reservations` (
@@ -244,7 +302,7 @@ CREATE TABLE `reservations` (
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -256,7 +314,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
@@ -271,105 +329,150 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 
 -- --------------------------------------------------------
 
--- Tabela kontakt do przechowywania wiadomości od użytkowników
-
-CREATE TABLE `kontakt` (
-  `id` int(11) NOT NULL,
-  `imie_nazwisko` varchar(150) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `temat` varchar(200) NOT NULL,
-  `tresc` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
--- Zrzut danych tabeli `kontakt`
+-- Stand-in structure for view `view_attractions_nearby`
+-- (See below for the actual view)
 --
-
-INSERT INTO `kontakt` (`id`, `imie_nazwisko`, `email`, `temat`, `tresc`) VALUES
-(1, 'Jan Nowak', 'jan.nowak@gmail.com', 'Rezerwacja domku', 'Chciałbym zarezerwować domek na weekend.'),
-(2, 'Anna Kowalska', 'anna.kowalska@gmail.com', 'Pytanie o wyposażenie', 'Czy w domku jest pralka?'),
-(3, 'Piotr Zieliński', 'piotr.zielinski@gmail.com', 'Dostępność terminu', 'Czy domek jest wolny w lipcu?'),
-(4, 'Ewa Wiśniewska', 'ewa.wisniewska@gmail.com', 'Zwierzęta', 'Czy można przyjechać z psem?'),
-(5, 'Kamil Mazur', 'kamil.mazur@gmail.com', 'Dodatkowe łóżko', 'Czy można dostać dostawkę dla dziecka?'),
-(6, 'Karolina Dąbrowska', 'karolina.dabrowska@gmail.com', 'Parking', 'Czy jest miejsce parkingowe?'),
-(7, 'Marek Lewandowski', 'marek.lewandowski@gmail.com', 'Grill', 'Czy jest możliwość grillowania?'),
-(8, 'Magdalena Kaczmarek', 'magda.kaczmarek@gmail.com', 'Internet', 'Czy jest dostęp do Wi-Fi?'),
-(9, 'Tomasz Szymański', 'tomasz.szymanski@gmail.com', 'Rowery', 'Czy można wypożyczyć rowery?'),
-(10, 'Paulina Wójcik', 'paulina.wojcik@gmail.com', 'Doba hotelowa', 'Od której godziny można się zameldować?');
+CREATE TABLE `view_attractions_nearby` (
+`id` int(11)
+,`name` varchar(150)
+,`description` text
+,`distance_km` decimal(5,2)
+);
 
 -- --------------------------------------------------------
 
--- Tabela attractions - atrakcje w okolicy domków
-
-CREATE TABLE `attractions` (
-  `id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `description` text NOT NULL,
-  `distance_km` decimal(5,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
--- Zrzut danych tabeli `attractions`
+-- Stand-in structure for view `view_cabin_expenses_summary`
+-- (See below for the actual view)
 --
+CREATE TABLE `view_cabin_expenses_summary` (
+`cabin_id` int(11)
+,`cabin_name` varchar(100)
+,`total_expenses` decimal(32,2)
+);
 
-INSERT INTO `attractions` (`id`, `name`, `description`, `distance_km`) VALUES
-(1, 'Jezioro Łabędzia', 'Malownicze jezioro oddalone o 2 km od domku. Idealne miejsce na kąpiele, wędkowanie i kajaki. W sezonie działa wypożyczalnia sprzętu wodnego.', 2.00),
-(2, 'Puszcza Zielona', 'Rozległy kompleks leśny z trasami rowerowymi i szlakami pieszymi. Można spotkać dzikie zwierzęta i zbierać grzyby (w sezonie).', 1.80),
-(3, 'Zamek Krzyżacki', 'Historyczny zamek z XIV wieku, oddalony o 15 km. Organizowane są nocne zwiedzania z przewodnikiem w kostiumach.', 15.00),
-(4, 'Strefa Spa & Wellness', 'Luksusowe SPA oferujące masaże, baseny termalne i sauny. Znajduje się w odległości 10 km od domku.', 10.00),
-(5, 'Muzeum Regionalne', 'Interaktywne muzeum prezentujące historię regionu. Działa tu także kawiarnia z domowymi ciastami.', 3.20),
-(6, 'Trasy rowerowe', 'Sieć oznakowanych tras rowerowych o różnym poziomie trudności. Można wypożyczyć rowery w pobliskiej wypożyczalni.', 0.50),
-(7, 'Park Linowy "Leśna Przygoda"', 'Adrenalina dla całej rodziny! Trasy o różnym poziomie trudności, zjazdy tyrolskie i mosty linowe zawieszone w koronach drzew. Dla dzieci specjalna strefa z opiekunem.', 2.70),
-(8, 'Punkt Widokowy "Góra Panorama"', 'Najpiękniejsza panorama w regionie! Łatwa ścieżka (1.5 km) prowadzi na szczyt, skąd widać jezioro, lasy i okoliczne wioski. Idealne miejsce na zachód słońca.', 1.50),
-(9, 'Skansen "Dawna Wieś"', 'Żywe muzeum tradycji! Zobacz XVIII-wieczne chaty, warsztaty rzemieślnicze i pokazy wypieku chleba. W weekendy organizowane są warsztaty dla dzieci.', 4.40),
-(10, 'Spływ Rzeką Nurt', '3-godzinna trasa kajakowa przez malownicze zakola rzeki. Wypożyczalnia zapewnia suchy bagaż i transport z powrotem. Dla rodzin dostępne stabilne kanadyjki.', 2.30);
+-- --------------------------------------------------------
 
 --
--- Indeksy dla zrzutów tabel
+-- Stand-in structure for view `view_employee_latest_salary`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_employee_latest_salary` (
+`employee_id` int(11)
+,`employee_name` varchar(100)
+,`salary` decimal(10,2)
+,`payment_date` date
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `view_pending_maintenance_requests`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_pending_maintenance_requests` (
+`request_id` int(11)
+,`cabin_name` varchar(100)
+,`description` text
+,`status` enum('pending','in_progress','completed')
+,`request_date` date
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_attractions_nearby`
+--
+DROP TABLE IF EXISTS `view_attractions_nearby`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_attractions_nearby`  AS SELECT `attractions`.`id` AS `id`, `attractions`.`name` AS `name`, `attractions`.`description` AS `description`, `attractions`.`distance_km` AS `distance_km` FROM `attractions` WHERE `attractions`.`distance_km` <= 3.00 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_cabin_expenses_summary`
+--
+DROP TABLE IF EXISTS `view_cabin_expenses_summary`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_cabin_expenses_summary`  AS SELECT `c`.`id` AS `cabin_id`, `c`.`name` AS `cabin_name`, sum(`e`.`amount`) AS `total_expenses` FROM (`cabins` `c` left join `cabin_expenses` `e` on(`c`.`id` = `e`.`cabin_id`)) GROUP BY `c`.`id`, `c`.`name` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_employee_latest_salary`
+--
+DROP TABLE IF EXISTS `view_employee_latest_salary`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_employee_latest_salary`  AS SELECT `e`.`id` AS `employee_id`, `e`.`name` AS `employee_name`, `s`.`salary` AS `salary`, `s`.`payment_date` AS `payment_date` FROM ((`employees` `e` join (select `employee_salaries`.`employee_id` AS `employee_id`,max(`employee_salaries`.`payment_date`) AS `max_date` from `employee_salaries` group by `employee_salaries`.`employee_id`) `latest` on(`e`.`id` = `latest`.`employee_id`)) join `employee_salaries` `s` on(`s`.`employee_id` = `latest`.`employee_id` and `s`.`payment_date` = `latest`.`max_date`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_pending_maintenance_requests`
+--
+DROP TABLE IF EXISTS `view_pending_maintenance_requests`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_pending_maintenance_requests`  AS SELECT `mr`.`id` AS `request_id`, `c`.`name` AS `cabin_name`, `mr`.`description` AS `description`, `mr`.`status` AS `status`, `mr`.`request_date` AS `request_date` FROM (`maintenance_requests` `mr` join `cabins` `c` on(`mr`.`cabin_id` = `c`.`id`)) WHERE `mr`.`status` = 'pending' ;
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Indeksy dla tabeli `cabins`
+-- Indexes for table `attractions`
+--
+ALTER TABLE `attractions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cabins`
 --
 ALTER TABLE `cabins`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `cabin_expenses`
+-- Indexes for table `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indeksy dla tabeli `employees`
+-- Indexes for table `employees`
 --
 ALTER TABLE `employees`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `employee_salaries`
+-- Indexes for table `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
   ADD PRIMARY KEY (`id`),
   ADD KEY `employee_id` (`employee_id`);
 
 --
--- Indeksy dla tabeli `maintenance_requests`
+-- Indexes for table `kontakt`
+--
+ALTER TABLE `kontakt`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indeksy dla tabeli `opinions`
+-- Indexes for table `opinions`
 --
 ALTER TABLE `opinions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indeksy dla tabeli `reservations`
+-- Indexes for table `reservations`
 --
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
@@ -377,7 +480,7 @@ ALTER TABLE `reservations`
   ADD KEY `cabin_id` (`cabin_id`);
 
 --
--- Indeksy dla tabeli `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -385,173 +488,103 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indeksy dla tabeli `kontakt`
+-- AUTO_INCREMENT for dumped tables
 --
-ALTER TABLE `kontakt`
-  ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `attractions`
+-- AUTO_INCREMENT for table `attractions`
 --
 ALTER TABLE `attractions`
-  ADD PRIMARY KEY (`id`);
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT dla zrzuconych tabel
---
-
---
--- AUTO_INCREMENT dla tabeli `cabins`
+-- AUTO_INCREMENT for table `cabins`
 --
 ALTER TABLE `cabins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT dla tabeli `cabin_expenses`
+-- AUTO_INCREMENT for table `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT dla tabeli `employees`
+-- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT dla tabeli `employee_salaries`
+-- AUTO_INCREMENT for table `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `kontakt`
+--
+ALTER TABLE `kontakt`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT dla tabeli `maintenance_requests`
+-- AUTO_INCREMENT for table `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT dla tabeli `opinions`
+-- AUTO_INCREMENT for table `opinions`
 --
 ALTER TABLE `opinions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT dla tabeli `reservations`
+-- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT dla tabeli `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT dla tabeli `kontakt`
---
-ALTER TABLE `kontakt`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT dla tabeli `attractions`
---
-ALTER TABLE `attractions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Ograniczenia dla zrzutów tabel
+-- Constraints for dumped tables
 --
 
 --
--- Ograniczenia dla tabeli `cabin_expenses`
+-- Constraints for table `cabin_expenses`
 --
 ALTER TABLE `cabin_expenses`
   ADD CONSTRAINT `cabin_expenses_ibfk_1` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
 
 --
--- Ograniczenia dla tabeli `employee_salaries`
+-- Constraints for table `employee_salaries`
 --
 ALTER TABLE `employee_salaries`
   ADD CONSTRAINT `employee_salaries_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE;
 
 --
--- Ograniczenia dla tabeli `maintenance_requests`
+-- Constraints for table `maintenance_requests`
 --
 ALTER TABLE `maintenance_requests`
   ADD CONSTRAINT `maintenance_requests_ibfk_1` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
 
 --
--- Ograniczenia dla tabeli `opinions`
+-- Constraints for table `opinions`
 --
 ALTER TABLE `opinions`
   ADD CONSTRAINT `opinions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Ograniczenia dla tabeli `reservations`
+-- Constraints for table `reservations`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`cabin_id`) REFERENCES `cabins` (`id`) ON DELETE CASCADE;
-
---
--- Ograniczenia dla tabeli `kontakt`
---
--- ALTER TABLE `kontakt`
---   ADD CONSTRAINT `kontakt_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
--- --------------------------------------------------------
--- Widok: Suma wydatków na każdy domek
-CREATE OR REPLACE VIEW view_cabin_expenses_summary AS
-SELECT
-  c.id AS cabin_id,
-  c.name AS cabin_name,
-  SUM(e.amount) AS total_expenses
-FROM cabins c
-LEFT JOIN cabin_expenses e ON c.id = e.cabin_id
-GROUP BY c.id, c.name;
-
--- --------------------------------------------------------
--- Widok: Ostatnia wypłata każdego pracownika
-CREATE OR REPLACE VIEW view_employee_latest_salary AS
-SELECT
-  e.id AS employee_id,
-  e.name AS employee_name,
-  s.salary,
-  s.payment_date
-FROM employees e
-JOIN (
-  SELECT employee_id, MAX(payment_date) AS max_date
-  FROM employee_salaries
-  GROUP BY employee_id
-) latest ON e.id = latest.employee_id
-JOIN employee_salaries s ON s.employee_id = latest.employee_id AND s.payment_date = latest.max_date;
-
--- --------------------------------------------------------
--- Widok: Oczekujące zgłoszenia serwisowe z nazwą domku
-CREATE OR REPLACE VIEW view_pending_maintenance_requests AS
-SELECT
-  mr.id AS request_id,
-  c.name AS cabin_name,
-  mr.description,
-  mr.status,
-  mr.request_date
-FROM maintenance_requests mr
-JOIN cabins c ON mr.cabin_id = c.id
-WHERE mr.status = 'pending';
-
--- --------------------------------------------------------
--- Widok: Atrakcje w promieniu 3 km od domków
-CREATE OR REPLACE VIEW view_attractions_nearby AS
-SELECT
-  id,
-  name,
-  description,
-  distance_km
-FROM attractions
-WHERE distance_km <= 3.00;
-
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
