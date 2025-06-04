@@ -198,6 +198,19 @@ if ($user_role === 'admin' || $user_role === 'konserwator') {
     if ($res) while ($row = mysqli_fetch_assoc($res)) $maintenance_requests[] = $row;
 }
 
+$pending_opinions = [];
+if ($user_role === 'admin') {
+    $res = mysqli_query($mysqli, "SELECT o.id, o.content, o.rating, u.username, o.created_at 
+    FROM opinions o 
+    JOIN users u ON o.user_id = u.id 
+    WHERE o.approved = FALSE 
+    ORDER BY o.id DESC");
+    if ($res) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $pending_opinions[] = $row;
+        }
+    }
+}
 // Pobierz atrakcje (attractions)
 $attractions = [];
 if ($user_role === 'admin') {
@@ -296,6 +309,26 @@ if ($save_kontakt_id) {
     $temat = mysqli_real_escape_string($mysqli, $_POST['temat']);
     $tresc = mysqli_real_escape_string($mysqli, $_POST['tresc']);
     mysqli_query($mysqli, "UPDATE kontakt SET imie_nazwisko='$imie_nazwisko', email='$email', temat='$temat', tresc='$tresc' WHERE id=$save_kontakt_id");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}
+if ($user_role === 'admin' && isset($_POST['opinia_action']) && isset($_POST['opinia_id'])) {
+    $opinia_id = (int)$_POST['opinia_id'];
+    $action = $_POST['opinia_action'];
+    
+    if ($action === 'approve') {
+        if (mysqli_query($mysqli, "UPDATE opinions SET approved=TRUE WHERE id=$opinia_id")) {
+            $_SESSION['admin_msg'] = 'Opinia została zatwierdzona.';
+        } else {
+            $_SESSION['admin_msg'] = 'Błąd podczas zatwierdzania opinii.';
+        }
+    } elseif ($action === 'reject') {
+        if (mysqli_query($mysqli, "DELETE FROM opinions WHERE id=$opinia_id")) {
+            $_SESSION['admin_msg'] = 'Opinia została odrzucona.';
+        } else {
+            $_SESSION['admin_msg'] = 'Błąd podczas odrzucania opinii.';
+        }
+    }
     header("Location: ".$_SERVER['REQUEST_URI']);
     exit;
 }
@@ -738,6 +771,7 @@ if ($save_kontakt_id) {
                     <button class="panel-tab-btn" data-tab="attractions">Atrakcje</a></button>
                     <button class="panel-tab-btn" data-tab="kontakt">Kontakt</button>
                     <button class="panel-tab-btn" data-tab="haslo-admin">Zmiana hasła</button>
+                    <button class="panel-tab-btn" data-tab="pending-opinions">Opinie do moderacji</button>
                 </div>
                 <div class="panel-tab-content" id="tab-rezerwacje-admin">
                     <h3>Rezerwacje oczekujące na akceptację</h3>
@@ -1260,6 +1294,42 @@ if ($save_kontakt_id) {
                     </form>
                 </div>
             <?php endif; ?>
+            <div class="panel-tab-content" id="tab-pending-opinions">
+    <h3>Opinie oczekujące na akceptację</h3>
+    <?php if (isset($_SESSION['admin_msg'])): ?>
+        <div class="panel-msg" style="color:green"><?= htmlspecialchars($_SESSION['admin_msg']) ?></div>
+        <?php unset($_SESSION['admin_msg']); ?>
+    <?php endif; ?>
+    <table class="rezerwacje-admin-table">
+        <tr>
+            <th>ID</th>
+            <th>Użytkownik</th>
+            <th>Ocena</th>
+            <th>Treść</th>
+            <th>Data</th>
+            <th>Akcja</th>
+        </tr>
+        <?php foreach($pending_opinions as $opinia): ?>
+        <tr>
+            <td><?= $opinia['id'] ?></td>
+            <td><?= htmlspecialchars($opinia['username']) ?></td>
+            <td><?= (int)$opinia['rating'] ?></td>
+            <td><?= htmlspecialchars($opinia['content']) ?></td>
+            <td><?= htmlspecialchars($opinia['created_at']) ?></td>
+            <td>
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="opinia_id" value="<?= $opinia['id'] ?>">
+                    <button type="submit" name="opinia_action" value="approve" class="accept-btn">Akceptuj</button>
+                    <button type="submit" name="opinia_action" value="reject" class="reject-btn">Odrzuć</button>
+                </form>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if (empty($pending_opinions)): ?>
+        <tr><td colspan="6" style="text-align:center;">Brak opinii oczekujących na moderację.</td></tr>
+        <?php endif; ?>
+    </table>
+</div>
         </div>
     </main>
     <footer>

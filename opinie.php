@@ -14,9 +14,10 @@ $opinie = [];
 if ($conn) {
     // Pobranie opinii wraz z danymi użytkowników
     $sql = "SELECT o.content, o.rating, u.username, u.email, o.id, o.created_at 
-            FROM opinions o 
-            JOIN users u ON o.user_id = u.id 
-            ORDER BY o.id DESC";
+        FROM opinions o 
+        JOIN users u ON o.user_id = u.id 
+        WHERE o.approved = TRUE
+        ORDER BY o.id DESC";
     $result = mysqli_query($conn, $sql);
     if ($result) {
         while ($row = mysqli_fetch_assoc($result)) {
