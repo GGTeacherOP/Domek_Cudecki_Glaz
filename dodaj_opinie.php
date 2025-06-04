@@ -36,11 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Zabezpieczenie i zapisanie opinii
+    // Zabezpieczenie i zapisanie opinii (domyślnie niezatwierdzonej)
     $tresc_esc = mysqli_real_escape_string($conn, $tresc);
-    $sql = "INSERT INTO opinions (user_id, content, rating) VALUES ($user_id, '$tresc_esc', $ocena)";
+    $sql = "INSERT INTO opinions (user_id, content, rating, approved) VALUES ($user_id, '$tresc_esc', $ocena, FALSE)";
+    
     if (mysqli_query($conn, $sql)) {
-        $_SESSION['opinia_success'] = 'Dziękujemy za dodanie opinii!';
+        $_SESSION['opinia_success'] = 'Dziękujemy za dodanie opinii! Opinia będzie widoczna po zatwierdzeniu przez administratora.';
     } else {
         $_SESSION['opinia_error'] = 'Nie udało się dodać opinii.';
     }
